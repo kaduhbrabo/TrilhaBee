@@ -1,0 +1,219 @@
+.pagina { max-width: 900px; }
+
+.cabecalho { margin-bottom: 20px; }
+
+.titulo {
+    font-size: 20px;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 3px;
+}
+
+.subtitulo {
+    font-size: 12px;
+    color: #8a8fa8;
+    margin: 0;
+}
+
+/* Filtros */
+.filtros {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.filtroBotao {
+    background: #ffffff;
+    border: 1px solid #f0ede8;
+    border-radius: 8px;
+    padding: 7px 14px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #6b7280;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.15s;
+}
+
+.filtroBotao:hover {
+    border-color: #fbbc05;
+    color: #1a1a2e;
+}
+
+.filtroAtivo {
+    background: #fbbc05;
+    border-color: #fbbc05;
+    color: #1a1a2e;
+    font-weight: 600;
+}
+
+.badge {
+    background: #ef4444;
+    color: white;
+    border-radius: 10px;
+    padding: 1px 6px;
+    font-size: 10px;
+    font-weight: 700;
+    animation: pulsar 2s infinite;
+}
+
+.badgeVerde {
+    background: #22c55e;
+    color: white;
+    border-radius: 10px;
+    padding: 1px 6px;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+@keyframes pulsar {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+/* Loading / Vazio */
+.loading, .vazio {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px;
+    gap: 10px;
+    color: #8a8fa8;
+    text-align: center;
+}
+
+.vazioIcone {
+    font-size: 40px;
+    color: #22c55e;
+    margin-bottom: 8px;
+}
+
+.vazio strong { font-size: 15px; color: #1a1a2e; }
+.vazio span { font-size: 13px; }
+
+/* Lista de alertas */
+.lista {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Cards */
+.card {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 18px 20px;
+    border: 1px solid #f0ede8;
+    border-left: 4px solid transparent;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+    animation: entrar 0.3s ease;
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.card:hover {
+    transform: translateX(3px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+}
+
+@keyframes entrar {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Cor da borda por nível */
+.card.alto  { border-left-color: #ef4444; }
+.card.medio { border-left-color: #f97316; }
+.card.baixo { border-left-color: #22c55e; }
+
+.cardResolvido {
+    opacity: 0.55;
+    border-left-color: #9ca3af !important;
+}
+
+.cardTopo {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+    gap: 12px;
+}
+
+.cardEsquerda {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.nivelBadge {
+    display: inline-flex;
+    align-items: center;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border-radius: 20px;
+    width: fit-content;
+}
+
+.nivelBadge.alto  { background: #fef2f2; color: #ef4444; animation: pulsarBorda 2.5s infinite; }
+.nivelBadge.medio { background: #fff7ed; color: #c2410c; }
+.nivelBadge.baixo { background: #f0fdf4; color: #16a34a; }
+
+@keyframes pulsarBorda {
+    0%, 100% { box-shadow: none; }
+    50% { box-shadow: 0 0 0 3px rgba(239,68,68,0.15); }
+}
+
+.colmeiaNome {
+    font-size: 13px;
+    color: #1a1a2e;
+    font-weight: 600;
+}
+
+.data {
+    font-size: 11px;
+    color: #b0b5c4;
+    white-space: nowrap;
+}
+
+.mensagem {
+    font-size: 13px;
+    color: #4b5563;
+    line-height: 1.6;
+    margin-bottom: 14px;
+}
+
+.cardRodape {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 10px;
+    border-top: 1px solid #f5f3ee;
+}
+
+.btnResolver {
+    background: #f0fdf4 !important;
+    border: 1px solid #bbf7d0 !important;
+    color: #16a34a !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    border-radius: 8px !important;
+    padding: 6px 14px !important;
+    transition: all 0.15s !important;
+}
+
+.btnResolver:hover {
+    background: #dcfce7 !important;
+}
+
+.resolvidoTag {
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: #16a34a;
+}
