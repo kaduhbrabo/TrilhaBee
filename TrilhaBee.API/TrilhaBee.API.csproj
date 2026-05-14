@@ -9,6 +9,10 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.20" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 
@@ -16,6 +20,7 @@
     <ProjectReference Include="..\TrilhaBee.Aplicacao\TrilhaBee.Aplicacao.csproj" />
     <ProjectReference Include="..\TrilhaBee.Dominio\TrilhaBee.Dominio.csproj" />
     <ProjectReference Include="..\TrilhaBee.Repositorio\TrilhaBee.Repositorio.csproj" />
+    <ProjectReference Include="..\TrilhaBee.Servicos\TrilhaBee.Servicos.csproj" />
   </ItemGroup>
 
 </Project>

@@ -3,6 +3,7 @@
   <ItemGroup>
     <ProjectReference Include="..\TrilhaBee.Repositorio\TrilhaBee.Repositorio.csproj" />
     <ProjectReference Include="..\TrilhaBee.Dominio\TrilhaBee.Dominio.csproj" />
+    <ProjectReference Include="..\TrilhaBee.Servicos\TrilhaBee.Servicos.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

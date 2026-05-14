@@ -80,6 +80,9 @@ builder.Services.AddScoped<InspecaoAplicacao>();
 builder.Services.AddScoped<AcaoManejoAplicacao>();
 builder.Services.AddScoped<AlertaIAAplicacao>();
 
+// Injeção de Dependências - Servicos
+builder.Services.AddScoped<TrilhaBee.Servicos.Interfaces.IAlertaIAService, TrilhaBee.Servicos.AlertaIAService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
