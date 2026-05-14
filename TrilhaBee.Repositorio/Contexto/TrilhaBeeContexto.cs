@@ -12,7 +12,7 @@ public class TrilhaBeeContexto : DbContext
     public DbSet<AlertaIA> Alertas { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlServer("Server=.;Database=TrilhaBee;Trusted_Connection=True;TrustServerCertificate=True");
+        optionsBuilder.UseSqlServer("Server=DESKTOP-HRI9LP9\\SQLEXPRESS;Database=TrilhaBee;Trusted_Connection=True;TrustServerCertificate=True");
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
