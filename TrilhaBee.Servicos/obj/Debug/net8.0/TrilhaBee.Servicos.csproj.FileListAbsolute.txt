@@ -9,3 +9,4 @@ C:\ProjetoFinal_Itera360\TrilhaBee\TrilhaBee.Servicos\obj\Debug\net8.0\TrilhaBee
 C:\ProjetoFinal_Itera360\TrilhaBee\TrilhaBee.Servicos\obj\Debug\net8.0\refint\TrilhaBee.Servicos.dll
 C:\ProjetoFinal_Itera360\TrilhaBee\TrilhaBee.Servicos\obj\Debug\net8.0\TrilhaBee.Servicos.pdb
 C:\ProjetoFinal_Itera360\TrilhaBee\TrilhaBee.Servicos\obj\Debug\net8.0\ref\TrilhaBee.Servicos.dll
+c:\ProjetoFinal_Itera360\TrilhaBee\TrilhaBee.Servicos\obj\Debug\net8.0\TrilhaBee.Servicos.sourcelink.json

@@ -8,16 +8,43 @@ namespace TrilhaBee.Aplicacao
     public class InspecaoAplicacao
     {
         readonly IInspecaoRepositorio _inspecaoRepositorio;
+        readonly TrilhaBee.Servicos.Interfaces.IAlertaIAService _alertaIAService;
+        readonly IAlertaIARepositorio _alertaIARepositorio;
 
-        public InspecaoAplicacao(IInspecaoRepositorio inspecaoRepositorio)
+        public InspecaoAplicacao(
+            IInspecaoRepositorio inspecaoRepositorio,
+            TrilhaBee.Servicos.Interfaces.IAlertaIAService alertaIAService,
+            IAlertaIARepositorio alertaIARepositorio)
         {
             _inspecaoRepositorio = inspecaoRepositorio;
+            _alertaIAService = alertaIAService;
+            _alertaIARepositorio = alertaIARepositorio;
         }
 
         public void Criar(Inspecao inspecao)
         {
             inspecao.DataInspecao = DateTime.Now;
             _inspecaoRepositorio.Adicionar(inspecao);
+
+            // Integração com IA
+            var mensagemAlerta = _alertaIAService.AnalisarInspecao(
+                inspecao.ForcaColmeia, 
+                inspecao.NivelAlimento, 
+                inspecao.TemRainha, 
+                inspecao.TemPostura);
+
+            if (!string.IsNullOrEmpty(mensagemAlerta))
+            {
+                var alerta = new AlertaIA
+                {
+                    Mensagem = mensagemAlerta,
+                    DataGeracao = DateTime.Now,
+                    NivelGravidade = "Atenção",
+                    Resolvido = false,
+                    ColmeiaID = inspecao.ColmeiaID
+                };
+                _alertaIARepositorio.Adicionar(alerta);
+            }
         }
 
         public void Atualizar(Inspecao inspecao)
