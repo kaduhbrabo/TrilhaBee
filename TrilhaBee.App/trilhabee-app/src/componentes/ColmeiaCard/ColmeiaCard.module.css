@@ -1,0 +1,127 @@
+.cardHex {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(251, 188, 5, 0.2);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Sutil forma hexagonal inspirada na colmeia como detalhe visual (pseudo-elemento) */
+.cardHex::before {
+    content: '';
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    width: 60px;
+    height: 60px;
+    background-color: rgba(251, 188, 5, 0.1);
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    transform: rotate(30deg);
+}
+
+.cardHex:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(251, 188, 5, 0.15);
+    border-color: rgba(251, 188, 5, 0.5);
+}
+
+.cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.title {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: #2c3e50;
+}
+
+.statusIcon {
+    font-size: 20px;
+}
+
+.iconActive {
+    color: #2ecc71;
+}
+
+.iconInactive {
+    color: #e74c3c;
+}
+
+.cardBody {
+    margin-bottom: 24px;
+}
+
+.infoRow {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.label {
+    color: #7f8c8d;
+    font-weight: 500;
+}
+
+.textData {
+    color: #34495e;
+    font-weight: 600;
+}
+
+.textActive {
+    color: #2ecc71;
+    font-weight: 600;
+}
+
+.textInactive {
+    color: #e74c3c;
+    font-weight: 600;
+}
+
+.cardFooter {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.btnAcao {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btnEdit {
+    background-color: #f8f9fa;
+    color: #34495e;
+}
+
+.btnEdit:hover {
+    background-color: #e2e6ea;
+    color: #2c3e50;
+}
+
+.btnDelete {
+    background-color: #fff0f0;
+    color: #e74c3c;
+}
+
+.btnDelete:hover {
+    background-color: #ffe6e6;
+    color: #c0392b;
+}
