@@ -1,0 +1,32 @@
+.paginaConteudo {
+    background-color: transparent;
+    padding: 0;
+}
+
+.cabecalhoPagina {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    background-color: #ffffff;
+    padding: 24px 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+
+.cabecalhoPagina h2 {
+    margin: 0;
+    color: #2c3e50;
+    font-weight: 700;
+}
+
+.acoesHeader {
+    display: flex;
+    gap: 12px;
+}
+
+.gridColmeias {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
+}
