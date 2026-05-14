@@ -1,0 +1,55 @@
+.paginaConteudo {
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+.cabecalhoPagina {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+}
+
+.cabecalhoPagina h2 {
+    margin: 0;
+    color: #2c3e50;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+}
+
+.btnNovo {
+    background-color: #fbbc05;
+    border-color: #fbbc05;
+    color: #2c3e50;
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.btnNovo:hover {
+    background-color: #e5ab00;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(251, 188, 5, 0.3);
+}
+
+.tabelaContainer {
+    min-height: 300px;
+}
+
+.tabelaHeader th {
+    color: #7f8c8d;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #f0f2f5;
+    padding-bottom: 15px;
+}
