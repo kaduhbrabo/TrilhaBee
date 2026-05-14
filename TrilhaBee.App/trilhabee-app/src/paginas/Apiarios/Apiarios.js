@@ -120,8 +120,11 @@ const Apiarios = () => {
         <Topbar>
             <div className={styles.paginaConteudo}>
                 <div className={styles.cabecalhoPagina}>
-                    <h2>Seus Apiários</h2>
-                    <Button variant="warning" className={styles.btnNovo} onClick={abrirModalNovo}>
+                    <div>
+                        <h2 style={{ fontSize: '20px', fontWeight: 800, color: '#1a1a2e', marginBottom: 2 }}>Meus Apiários</h2>
+                        <p style={{ fontSize: '12px', color: '#8a8fa8', margin: 0 }}>Gerencie os locais de instalação das suas colmeias</p>
+                    </div>
+                    <Button className={styles.btnNovo} onClick={abrirModalNovo}>
                         <FaPlus className="me-2" />
                         Novo Apiário
                     </Button>
