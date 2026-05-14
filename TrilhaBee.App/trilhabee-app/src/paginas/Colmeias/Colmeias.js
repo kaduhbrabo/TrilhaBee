@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Modal, Spinner, Form } from 'react-bootstrap';
-import { FaPlus, FaFilter } from 'react-icons/fa';
+import { FaPlus, FaCheckCircle, FaExclamationTriangle, FaTimes } from 'react-icons/fa';
 import Topbar from '../../componentes/Topbar/Topbar';
 import ColmeiaCard from '../../componentes/ColmeiaCard/ColmeiaCard';
 import { colmeiaAPI } from '../../services/colmeiaAPI';
@@ -9,27 +9,18 @@ import styles from './Colmeias.module.css';
 
 const Colmeias = () => {
     const [colmeias, setColmeias] = useState([]);
-    const [apiarios, setApiarios] = useState([]); // Para o select do formulário
+    const [apiarios, setApiarios] = useState([]);
     const [carregando, setCarregando] = useState(true);
-    
-    // Estados do Modal de Exclusão
+    const [filtro, setFiltro] = useState('todas');
+
     const [mostrarModalDel, setMostrarModalDel] = useState(false);
     const [colmeiaSelecionada, setColmeiaSelecionada] = useState(null);
-
-    // Estados do Modal de Formulário (Criar/Editar)
     const [mostrarModalForm, setMostrarModalForm] = useState(false);
     const [modoEdicao, setModoEdicao] = useState(false);
-    const [formData, setFormData] = useState({
-        identificacao: '',
-        tipoAbelha: '',
-        ativa: true,
-        apiarioID: ''
-    });
+    const [formData, setFormData] = useState({ identificacao: '', tipoAbelha: '', ativa: true, apiarioID: '' });
     const [salvando, setSalvando] = useState(false);
 
-    useEffect(() => {
-        carregarDados();
-    }, []);
+    useEffect(() => { carregarDados(); }, []);
 
     const carregarDados = async () => {
         try {
@@ -41,208 +32,183 @@ const Colmeias = () => {
             setColmeias(dadosColmeias);
             setApiarios(dadosApiarios);
         } catch (erro) {
-            console.error("Falha ao carregar colmeias", erro);
+            console.error('Falha ao carregar colmeias', erro);
         } finally {
             setCarregando(false);
         }
     };
 
-    // --- FUNÇÕES DE EXCLUSÃO ---
-    const abrirModalExclusao = (colmeia) => {
-        setColmeiaSelecionada(colmeia);
-        setMostrarModalDel(true);
+    const colmeiasFiltradas = colmeias.filter(c => {
+        if (filtro === 'ativas') return c.ativa;
+        if (filtro === 'inativas') return !c.ativa;
+        return true;
+    });
+
+    const totalAtivas = colmeias.filter(c => c.ativa).length;
+    const totalInativas = colmeias.filter(c => !c.ativa).length;
+
+    const getNomeApiario = (id) => {
+        const a = apiarios.find(a => a.apiarioID === id);
+        return a ? a.nome : '';
     };
 
-    const fecharModalDel = () => {
-        setMostrarModalDel(false);
-        setColmeiaSelecionada(null);
-    };
-
+    // Exclusão
     const confirmarExclusao = async () => {
-        if (!colmeiaSelecionada) return;
         try {
             await colmeiaAPI.deletarAsync(colmeiaSelecionada.colmeiaID);
-            setColmeias(colmeias.filter(c => c.colmeiaID !== colmeiaSelecionada.colmeiaID));
-            fecharModalDel();
-        } catch (erro) {
-            alert("Não foi possível excluir a colmeia.");
-        }
+            setColmeias(prev => prev.filter(c => c.colmeiaID !== colmeiaSelecionada.colmeiaID));
+            setMostrarModalDel(false);
+        } catch { alert('Não foi possível excluir.'); }
     };
 
-    // --- FUNÇÕES DE FORMULÁRIO (CRIAR/EDITAR) ---
-    const abrirModalNovo = () => {
+    // Formulário
+    const abrirNovo = () => {
         setModoEdicao(false);
         setFormData({ identificacao: '', tipoAbelha: '', ativa: true, apiarioID: '' });
         setMostrarModalForm(true);
     };
 
-    const abrirModalEditar = (colmeia) => {
+    const abrirEditar = (c) => {
         setModoEdicao(true);
-        setColmeiaSelecionada(colmeia);
-        setFormData({
-            identificacao: colmeia.identificacao,
-            tipoAbelha: colmeia.tipoAbelha,
-            ativa: colmeia.ativa,
-            apiarioID: colmeia.apiarioID || ''
-        });
+        setColmeiaSelecionada(c);
+        setFormData({ identificacao: c.identificacao, tipoAbelha: c.tipoAbelha, ativa: c.ativa, apiarioID: c.apiarioID || '' });
         setMostrarModalForm(true);
     };
 
-    const fecharModalForm = () => {
-        setMostrarModalForm(false);
-        setColmeiaSelecionada(null);
+    const handleChange = (e) => {
+        const val = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+        setFormData(p => ({ ...p, [e.target.name]: val }));
     };
 
-    const handleFormChange = (e) => {
-        const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
-        setFormData(prev => ({ ...prev, [e.target.name]: value }));
-    };
-
-    const salvarColmeia = async (e) => {
+    const salvar = async (e) => {
         e.preventDefault();
         setSalvando(true);
-
         try {
-            const payload = {
-                ...formData,
-                apiarioID: parseInt(formData.apiarioID)
-            };
-
-            if (modoEdicao) {
-                await colmeiaAPI.atualizarAsync(colmeiaSelecionada.colmeiaID, payload);
-            } else {
-                await colmeiaAPI.criarAsync(payload);
-            }
-            
-            fecharModalForm();
-            carregarDados(); // Recarrega a lista
-        } catch (erro) {
-            alert("Erro ao salvar colmeia. Verifique os dados.");
-        } finally {
-            setSalvando(false);
-        }
-    };
-
-    // Helper para achar o nome do apiário
-    const getNomeApiario = (apiarioId) => {
-        const apiario = apiarios.find(a => a.apiarioID === apiarioId);
-        return apiario ? apiario.nome : 'Sem apiário';
+            const payload = { ...formData, apiarioID: parseInt(formData.apiarioID) };
+            if (modoEdicao) await colmeiaAPI.atualizarAsync(colmeiaSelecionada.colmeiaID, payload);
+            else await colmeiaAPI.criarAsync(payload);
+            setMostrarModalForm(false);
+            carregarDados();
+        } catch { alert('Erro ao salvar. Verifique os campos.'); }
+        finally { setSalvando(false); }
     };
 
     return (
         <Topbar>
-            <div className={styles.paginaConteudo}>
-                <div className={styles.cabecalhoPagina}>
-                    <h2>Colmeias</h2>
-                    <div className={styles.acoesHeader}>
-                        <Button variant="outline-secondary" className="me-2">
-                            <FaFilter className="me-2" /> Filtrar
-                        </Button>
-                        <Button variant="warning" onClick={abrirModalNovo}>
-                            <FaPlus className="me-2" /> Nova Colmeia
-                        </Button>
+            <div className={styles.pagina}>
+                {/* Cabeçalho */}
+                <div className={styles.cabecalho}>
+                    <div>
+                        <h2 className={styles.titulo}>Minhas Colmeias</h2>
+                        <p className={styles.subtitulo}>Gerenciamento completo das colmeias</p>
                     </div>
+                    <Button className={styles.btnNovo} onClick={abrirNovo}>
+                        <FaPlus className="me-2" /> Adicionar Colmeia
+                    </Button>
                 </div>
 
+                {/* Mini-cards de resumo (estilo Figma) */}
+                <div className={styles.resumoGrid}>
+                    <button className={`${styles.resumoCard} ${filtro === 'todas' ? styles.resumoAtivo : ''}`} onClick={() => setFiltro('todas')}>
+                        <span className={`${styles.resumoIcone} ${styles.resumoVerde}`}>
+                            <FaCheckCircle />
+                        </span>
+                        <div>
+                            <strong>{colmeias.length}</strong>
+                            <span>Total</span>
+                        </div>
+                    </button>
+                    <button className={`${styles.resumoCard} ${filtro === 'ativas' ? styles.resumoAtivo : ''}`} onClick={() => setFiltro('ativas')}>
+                        <span className={`${styles.resumoIcone} ${styles.resumoVerde}`}>
+                            <FaCheckCircle />
+                        </span>
+                        <div>
+                            <strong>{totalAtivas}</strong>
+                            <span>Saudáveis</span>
+                        </div>
+                    </button>
+                    <button className={`${styles.resumoCard} ${filtro === 'inativas' ? styles.resumoAtivo : ''}`} onClick={() => setFiltro('inativas')}>
+                        <span className={`${styles.resumoIcone} ${styles.resumoLaranja}`}>
+                            <FaExclamationTriangle />
+                        </span>
+                        <div>
+                            <strong>{totalInativas}</strong>
+                            <span>Inativas</span>
+                        </div>
+                    </button>
+                </div>
+
+                {/* Grade de Cards */}
                 {carregando ? (
-                    <div className="text-center p-5">
-                        <Spinner animation="border" variant="warning" />
-                        <p className="mt-3 text-muted">Carregando colmeias...</p>
+                    <div className={styles.loading}>
+                        <Spinner animation="border" style={{ color: '#fbbc05' }} />
                     </div>
-                ) : colmeias.length === 0 ? (
-                    <div className="text-center p-5 text-muted">
-                        Nenhuma colmeia encontrada.
+                ) : colmeiasFiltradas.length === 0 ? (
+                    <div className={styles.vazio}>
+                        <FaTimes className={styles.vazioIcone} />
+                        <p>Nenhuma colmeia encontrada.</p>
                     </div>
                 ) : (
-                    <div className={styles.gridColmeias}>
-                        {colmeias.map(colmeia => (
-                            <ColmeiaCard 
-                                key={colmeia.colmeiaID}
-                                identificacao={colmeia.identificacao}
-                                ativa={colmeia.ativa}
-                                apiarioNome={getNomeApiario(colmeia.apiarioID)}
-                                onEdit={() => abrirModalEditar(colmeia)}
-                                onDelete={() => abrirModalExclusao(colmeia)}
+                    <div className={styles.grid}>
+                        {colmeiasFiltradas.map(c => (
+                            <ColmeiaCard
+                                key={c.colmeiaID}
+                                identificacao={c.identificacao}
+                                tipoAbelha={c.tipoAbelha}
+                                ativa={c.ativa}
+                                apiarioNome={getNomeApiario(c.apiarioID)}
+                                onEdit={() => abrirEditar(c)}
+                                onDelete={() => { setColmeiaSelecionada(c); setMostrarModalDel(true); }}
                             />
                         ))}
                     </div>
                 )}
             </div>
 
-            {/* Modal Confirmação Exclusão */}
-            <Modal show={mostrarModalDel} onHide={fecharModalDel} centered>
+            {/* Modal Exclusão */}
+            <Modal show={mostrarModalDel} onHide={() => setMostrarModalDel(false)} centered>
                 <Modal.Header closeButton>
-                    <Modal.Title>Confirmar Exclusão</Modal.Title>
+                    <Modal.Title style={{ fontSize: '15px' }}>Confirmar Exclusão</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>
-                    Tem certeza de que deseja excluir a colmeia <strong>{colmeiaSelecionada?.identificacao}</strong>?
+                <Modal.Body style={{ fontSize: '14px' }}>
+                    Tem certeza que deseja excluir <strong>{colmeiaSelecionada?.identificacao}</strong>?
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={fecharModalDel}>Cancelar</Button>
-                    <Button variant="danger" onClick={confirmarExclusao}>Sim, excluir</Button>
+                    <Button variant="light" onClick={() => setMostrarModalDel(false)}>Cancelar</Button>
+                    <Button variant="danger" onClick={confirmarExclusao}>Excluir</Button>
                 </Modal.Footer>
             </Modal>
 
             {/* Modal Formulário */}
-            <Modal show={mostrarModalForm} onHide={fecharModalForm} centered size="lg">
-                <Form onSubmit={salvarColmeia}>
+            <Modal show={mostrarModalForm} onHide={() => setMostrarModalForm(false)} centered>
+                <Form onSubmit={salvar}>
                     <Modal.Header closeButton>
-                        <Modal.Title>{modoEdicao ? 'Editar Colmeia' : 'Nova Colmeia'}</Modal.Title>
+                        <Modal.Title style={{ fontSize: '15px' }}>
+                            {modoEdicao ? 'Editar Colmeia' : 'Nova Colmeia'}
+                        </Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <Form.Group className="mb-3">
-                            <Form.Label>Identificação (Nome/Código)</Form.Label>
-                            <Form.Control 
-                                type="text" 
-                                name="identificacao"
-                                value={formData.identificacao}
-                                onChange={handleFormChange}
-                                required 
-                                placeholder="Ex: COL-01"
-                            />
+                            <Form.Label className={styles.formLabel}>Identificação</Form.Label>
+                            <Form.Control size="sm" type="text" name="identificacao" value={formData.identificacao} onChange={handleChange} required placeholder="Ex: COL-001" />
                         </Form.Group>
                         <Form.Group className="mb-3">
-                            <Form.Label>Tipo de Abelha</Form.Label>
-                            <Form.Control 
-                                type="text" 
-                                name="tipoAbelha"
-                                value={formData.tipoAbelha}
-                                onChange={handleFormChange}
-                                required 
-                                placeholder="Ex: Apis mellifera (Europeia)"
-                            />
+                            <Form.Label className={styles.formLabel}>Tipo de Abelha</Form.Label>
+                            <Form.Control size="sm" type="text" name="tipoAbelha" value={formData.tipoAbelha} onChange={handleChange} placeholder="Ex: Apis mellifera" />
                         </Form.Group>
                         <Form.Group className="mb-3">
-                            <Form.Label>Apiário</Form.Label>
-                            <Form.Select 
-                                name="apiarioID" 
-                                value={formData.apiarioID} 
-                                onChange={handleFormChange}
-                                required
-                            >
-                                <option value="">Selecione um apiário...</option>
-                                {apiarios.map(a => (
-                                    <option key={a.apiarioID} value={a.apiarioID}>
-                                        {a.nome}
-                                    </option>
-                                ))}
+                            <Form.Label className={styles.formLabel}>Apiário</Form.Label>
+                            <Form.Select size="sm" name="apiarioID" value={formData.apiarioID} onChange={handleChange} required>
+                                <option value="">Selecione...</option>
+                                {apiarios.map(a => <option key={a.apiarioID} value={a.apiarioID}>{a.nome}</option>)}
                             </Form.Select>
                         </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Check 
-                                type="switch"
-                                id="ativa-switch"
-                                label="Colmeia Ativa?"
-                                name="ativa"
-                                checked={formData.ativa}
-                                onChange={handleFormChange}
-                            />
-                        </Form.Group>
+                        <Form.Check type="switch" id="ativa-switch" label="Colmeia Ativa" name="ativa" checked={formData.ativa} onChange={handleChange} />
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="secondary" onClick={fecharModalForm}>Cancelar</Button>
-                        <Button variant="warning" type="submit" disabled={salvando}>
-                            {salvando ? 'Salvando...' : 'Salvar Colmeia'}
+                        <Button variant="light" onClick={() => setMostrarModalForm(false)}>Cancelar</Button>
+                        <Button style={{ background: '#fbbc05', border: 'none', color: '#1a1a2e', fontWeight: 600 }} type="submit" disabled={salvando}>
+                            {salvando ? 'Salvando...' : 'Salvar'}
                         </Button>
                     </Modal.Footer>
                 </Form>
