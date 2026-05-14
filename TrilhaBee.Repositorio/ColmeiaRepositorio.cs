@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using Dapper;
 using TrilhaBee.Dominio.Entidades;
 using TrilhaBee.Repositorio.Interfaces;
 
@@ -40,7 +42,8 @@ namespace TrilhaBee.Repositorio
 
         public IEnumerable<Colmeia> ObterTodos()
         {
-            return _contexto.Colmeias.ToList();
+            var conexao = _contexto.Database.GetDbConnection();
+            return conexao.Query<Colmeia>("sp_ListarColmeias", commandType: System.Data.CommandType.StoredProcedure);
         }
     }
 }
