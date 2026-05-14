@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrilhaBee.Dominio", "TrilhaBee.Dominio\TrilhaBee.Dominio.csproj", "{0E024B57-A536-4B77-872B-CD3FC29FCA25}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrilhaBee.Repositorio", "TrilhaBee.Repositorio\TrilhaBee.Repositorio.csproj", "{7D06A077-181C-4397-87B7-5159BC572765}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrilhaBee.Aplicacao", "TrilhaBee.Aplicacao\TrilhaBee.Aplicacao.csproj", "{BF736636-55EA-43B2-A458-2D6DE25B030A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrilhaBee.Servicos", "TrilhaBee.Servicos\TrilhaBee.Servicos.csproj", "{10F6F785-2284-43ED-A56F-E8991FE550A9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrilhaBee.API", "TrilhaBee.API\TrilhaBee.API.csproj", "{90F70382-AB76-493E-B752-C1E7BE25C2DC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0E024B57-A536-4B77-872B-CD3FC29FCA25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E024B57-A536-4B77-872B-CD3FC29FCA25}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E024B57-A536-4B77-872B-CD3FC29FCA25}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E024B57-A536-4B77-872B-CD3FC29FCA25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D06A077-181C-4397-87B7-5159BC572765}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D06A077-181C-4397-87B7-5159BC572765}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D06A077-181C-4397-87B7-5159BC572765}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D06A077-181C-4397-87B7-5159BC572765}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF736636-55EA-43B2-A458-2D6DE25B030A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF736636-55EA-43B2-A458-2D6DE25B030A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF736636-55EA-43B2-A458-2D6DE25B030A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF736636-55EA-43B2-A458-2D6DE25B030A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10F6F785-2284-43ED-A56F-E8991FE550A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10F6F785-2284-43ED-A56F-E8991FE550A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10F6F785-2284-43ED-A56F-E8991FE550A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10F6F785-2284-43ED-A56F-E8991FE550A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90F70382-AB76-493E-B752-C1E7BE25C2DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90F70382-AB76-493E-B752-C1E7BE25C2DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90F70382-AB76-493E-B752-C1E7BE25C2DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90F70382-AB76-493E-B752-C1E7BE25C2DC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

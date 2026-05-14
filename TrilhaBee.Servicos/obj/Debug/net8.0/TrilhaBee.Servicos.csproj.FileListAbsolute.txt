@@ -1,0 +1,11 @@
+C:\ProjetoFinal_Itera360\TrilhaBee\TrilhaBee.Servicos\bin\Debug\net8.0\TrilhaBee.Servicos.deps.json
+C:\ProjetoFinal_Itera360\TrilhaBee\TrilhaBee.Servicos\bin\Debug\net8.0\TrilhaBee.Servicos.dll
+C:\ProjetoFinal_Itera360\TrilhaBee\TrilhaBee.Servicos\bin\Debug\net8.0\TrilhaBee.Servicos.pdb
+C:\ProjetoFinal_Itera360\TrilhaBee\TrilhaBee.Servicos\obj\Debug\net8.0\TrilhaBee.Servicos.GeneratedMSBuildEditorConfig.editorconfig
+C:\ProjetoFinal_Itera360\TrilhaBee\TrilhaBee.Servicos\obj\Debug\net8.0\TrilhaBee.Servicos.AssemblyInfoInputs.cache
+C:\ProjetoFinal_Itera360\TrilhaBee\TrilhaBee.Servicos\obj\Debug\net8.0\TrilhaBee.Servicos.AssemblyInfo.cs
+C:\ProjetoFinal_Itera360\TrilhaBee\TrilhaBee.Servicos\obj\Debug\net8.0\TrilhaBee.Servicos.csproj.CoreCompileInputs.cache
+C:\ProjetoFinal_Itera360\TrilhaBee\TrilhaBee.Servicos\obj\Debug\net8.0\TrilhaBee.Servicos.dll
+C:\ProjetoFinal_Itera360\TrilhaBee\TrilhaBee.Servicos\obj\Debug\net8.0\refint\TrilhaBee.Servicos.dll
+C:\ProjetoFinal_Itera360\TrilhaBee\TrilhaBee.Servicos\obj\Debug\net8.0\TrilhaBee.Servicos.pdb
+C:\ProjetoFinal_Itera360\TrilhaBee\TrilhaBee.Servicos\obj\Debug\net8.0\ref\TrilhaBee.Servicos.dll

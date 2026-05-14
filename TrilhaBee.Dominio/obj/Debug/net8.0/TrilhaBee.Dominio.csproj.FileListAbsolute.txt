@@ -1,0 +1,11 @@
+C:\ProjetoFinal_Itera360\TrilhaBee\TrilhaBee.Dominio\bin\Debug\net8.0\TrilhaBee.Dominio.deps.json
+C:\ProjetoFinal_Itera360\TrilhaBee\TrilhaBee.Dominio\bin\Debug\net8.0\TrilhaBee.Dominio.dll
+C:\ProjetoFinal_Itera360\TrilhaBee\TrilhaBee.Dominio\bin\Debug\net8.0\TrilhaBee.Dominio.pdb
+C:\ProjetoFinal_Itera360\TrilhaBee\TrilhaBee.Dominio\obj\Debug\net8.0\TrilhaBee.Dominio.GeneratedMSBuildEditorConfig.editorconfig
+C:\ProjetoFinal_Itera360\TrilhaBee\TrilhaBee.Dominio\obj\Debug\net8.0\TrilhaBee.Dominio.AssemblyInfoInputs.cache
+C:\ProjetoFinal_Itera360\TrilhaBee\TrilhaBee.Dominio\obj\Debug\net8.0\TrilhaBee.Dominio.AssemblyInfo.cs
+C:\ProjetoFinal_Itera360\TrilhaBee\TrilhaBee.Dominio\obj\Debug\net8.0\TrilhaBee.Dominio.csproj.CoreCompileInputs.cache
+C:\ProjetoFinal_Itera360\TrilhaBee\TrilhaBee.Dominio\obj\Debug\net8.0\TrilhaBee.Dominio.dll
+C:\ProjetoFinal_Itera360\TrilhaBee\TrilhaBee.Dominio\obj\Debug\net8.0\refint\TrilhaBee.Dominio.dll
+C:\ProjetoFinal_Itera360\TrilhaBee\TrilhaBee.Dominio\obj\Debug\net8.0\TrilhaBee.Dominio.pdb
+C:\ProjetoFinal_Itera360\TrilhaBee\TrilhaBee.Dominio\obj\Debug\net8.0\ref\TrilhaBee.Dominio.dll

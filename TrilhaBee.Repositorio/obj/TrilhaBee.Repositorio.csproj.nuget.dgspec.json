@@ -1,0 +1,154 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\ProjetoFinal_Itera360\\TrilhaBee\\TrilhaBee.Repositorio\\TrilhaBee.Repositorio.csproj": {}
+  },
+  "projects": {
+    "C:\\ProjetoFinal_Itera360\\TrilhaBee\\TrilhaBee.Dominio\\TrilhaBee.Dominio.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\ProjetoFinal_Itera360\\TrilhaBee\\TrilhaBee.Dominio\\TrilhaBee.Dominio.csproj",
+        "projectName": "TrilhaBee.Dominio",
+        "projectPath": "C:\\ProjetoFinal_Itera360\\TrilhaBee\\TrilhaBee.Dominio\\TrilhaBee.Dominio.csproj",
+        "packagesPath": "C:\\Users\\cajup\\.nuget\\packages\\",
+        "outputPath": "C:\\ProjetoFinal_Itera360\\TrilhaBee\\TrilhaBee.Dominio\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\cajup\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.414/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\ProjetoFinal_Itera360\\TrilhaBee\\TrilhaBee.Repositorio\\TrilhaBee.Repositorio.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\ProjetoFinal_Itera360\\TrilhaBee\\TrilhaBee.Repositorio\\TrilhaBee.Repositorio.csproj",
+        "projectName": "TrilhaBee.Repositorio",
+        "projectPath": "C:\\ProjetoFinal_Itera360\\TrilhaBee\\TrilhaBee.Repositorio\\TrilhaBee.Repositorio.csproj",
+        "packagesPath": "C:\\Users\\cajup\\.nuget\\packages\\",
+        "outputPath": "C:\\ProjetoFinal_Itera360\\TrilhaBee\\TrilhaBee.Repositorio\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\cajup\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "C:\\ProjetoFinal_Itera360\\TrilhaBee\\TrilhaBee.Dominio\\TrilhaBee.Dominio.csproj": {
+                "projectPath": "C:\\ProjetoFinal_Itera360\\TrilhaBee\\TrilhaBee.Dominio\\TrilhaBee.Dominio.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Dapper": {
+              "target": "Package",
+              "version": "[2.1.72, )"
+            },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[6.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[6.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.414/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

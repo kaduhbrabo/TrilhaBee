@@ -1,0 +1,17 @@
+C:\ProjetoFinal_Itera360\TrilhaBee\TrilhaBee.Aplicacao\bin\Debug\net8.0\TrilhaBee.Aplicacao.deps.json
+C:\ProjetoFinal_Itera360\TrilhaBee\TrilhaBee.Aplicacao\bin\Debug\net8.0\TrilhaBee.Aplicacao.dll
+C:\ProjetoFinal_Itera360\TrilhaBee\TrilhaBee.Aplicacao\bin\Debug\net8.0\TrilhaBee.Aplicacao.pdb
+C:\ProjetoFinal_Itera360\TrilhaBee\TrilhaBee.Aplicacao\obj\Debug\net8.0\TrilhaBee.Aplicacao.GeneratedMSBuildEditorConfig.editorconfig
+C:\ProjetoFinal_Itera360\TrilhaBee\TrilhaBee.Aplicacao\obj\Debug\net8.0\TrilhaBee.Aplicacao.AssemblyInfoInputs.cache
+C:\ProjetoFinal_Itera360\TrilhaBee\TrilhaBee.Aplicacao\obj\Debug\net8.0\TrilhaBee.Aplicacao.AssemblyInfo.cs
+C:\ProjetoFinal_Itera360\TrilhaBee\TrilhaBee.Aplicacao\obj\Debug\net8.0\TrilhaBee.Aplicacao.csproj.CoreCompileInputs.cache
+C:\ProjetoFinal_Itera360\TrilhaBee\TrilhaBee.Aplicacao\obj\Debug\net8.0\TrilhaBee.Aplicacao.dll
+C:\ProjetoFinal_Itera360\TrilhaBee\TrilhaBee.Aplicacao\obj\Debug\net8.0\refint\TrilhaBee.Aplicacao.dll
+C:\ProjetoFinal_Itera360\TrilhaBee\TrilhaBee.Aplicacao\obj\Debug\net8.0\TrilhaBee.Aplicacao.pdb
+C:\ProjetoFinal_Itera360\TrilhaBee\TrilhaBee.Aplicacao\obj\Debug\net8.0\ref\TrilhaBee.Aplicacao.dll
+C:\ProjetoFinal_Itera360\TrilhaBee\TrilhaBee.Aplicacao\bin\Debug\net8.0\TrilhaBee.Dominio.dll
+C:\ProjetoFinal_Itera360\TrilhaBee\TrilhaBee.Aplicacao\bin\Debug\net8.0\TrilhaBee.Repositorio.dll
+C:\ProjetoFinal_Itera360\TrilhaBee\TrilhaBee.Aplicacao\bin\Debug\net8.0\TrilhaBee.Repositorio.pdb
+C:\ProjetoFinal_Itera360\TrilhaBee\TrilhaBee.Aplicacao\bin\Debug\net8.0\TrilhaBee.Dominio.pdb
+C:\ProjetoFinal_Itera360\TrilhaBee\TrilhaBee.Aplicacao\obj\Debug\net8.0\TrilhaBee.Aplicacao.csproj.AssemblyReference.cache
+C:\ProjetoFinal_Itera360\TrilhaBee\TrilhaBee.Aplicacao\obj\Debug\net8.0\TrilhaBe.9CDD11C2.Up2Date
