@@ -87,3 +87,8 @@ secrets.json
 # Documentacao (Apenas local)
 # =========================
 Documentacao/
+
+# =========================
+# Scripts Locais Não Versionados
+# =========================
+ObjetosBanco.sql
