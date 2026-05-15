@@ -4,7 +4,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import {
     FaUserCircle, FaBell, FaForumbee, FaLayerGroup,
     FaClipboardList, FaExclamationTriangle, FaBars,
-    FaSignOutAlt, FaHome, FaUser, FaArchive
+    FaSignOutAlt, FaHome, FaUser, FaArchive, FaMapMarkerAlt
 } from 'react-icons/fa';
 import { alertaIaAPI } from '../../services/alertaIaAPI';
 import styles from './Topbar.module.css';
@@ -12,8 +12,11 @@ import styles from './Topbar.module.css';
 const Topbar = ({ children }) => {
     const [mostrarMenu, setMostrarMenu] = useState(false);
     const [alertasPendentes, setAlertasPendentes] = useState(0);
+    const [climaGlobal, setClimaGlobal] = useState('');
     const navigate = useNavigate();
     const location = useLocation();
+
+    const OPENWEATHER_API_KEY = '4d311f9a29f0f074a07b79cc1248ccb5';
 
     const usuarioNome = localStorage.getItem('usuarioNome') || 'Apicultor';
 
@@ -25,6 +28,60 @@ const Topbar = ({ children }) => {
                 setAlertasPendentes(pendentes);
             })
             .catch(() => {}); // Silencia erro se não houver alertas ainda
+
+        // Lógica Global de Clima com Cache de 30 minutos
+        const carregarClima = () => {
+            const cache = sessionStorage.getItem('climaGlobalData');
+            if (cache) {
+                const { clima, timestamp } = JSON.parse(cache);
+                const agora = new Date().getTime();
+                if (agora - timestamp < 30 * 60 * 1000) {
+                    setClimaGlobal(clima);
+                    return; // Usa o cache válido
+                }
+            }
+
+            if (!navigator.geolocation) return;
+
+            navigator.geolocation.getCurrentPosition(async (pos) => {
+                const { latitude, longitude } = pos.coords;
+                try {
+                    const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${OPENWEATHER_API_KEY}&lang=pt_br&units=metric`);
+                    const data = await res.json();
+                    if(data.weather && data.weather.length > 0) {
+                        const cidade = data.name;
+                        const desc = data.weather[0].description;
+                        const temp = Math.round(data.main.temp);
+                        const stringClima = `${cidade} - ${desc.charAt(0).toUpperCase() + desc.slice(1)}, ${temp}°C`;
+                        
+                        setClimaGlobal(stringClima);
+                        sessionStorage.setItem('climaGlobalData', JSON.stringify({
+                            clima: stringClima,
+                            timestamp: new Date().getTime()
+                        }));
+                    }
+                } catch(e) { }
+            }, async () => {
+                // Fallback: Se não tiver GPS, busca por Alfenas como padrão
+                try {
+                    const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=Alfenas,br&appid=${OPENWEATHER_API_KEY}&lang=pt_br&units=metric`);
+                    const data = await res.json();
+                    if(data.weather && data.weather.length > 0) {
+                        const cidade = data.name;
+                        const desc = data.weather[0].description;
+                        const temp = Math.round(data.main.temp);
+                        const stringClima = `${cidade} - ${desc.charAt(0).toUpperCase() + desc.slice(1)}, ${temp}°C`;
+                        setClimaGlobal(stringClima);
+                        sessionStorage.setItem('climaGlobalData', JSON.stringify({
+                            clima: stringClima,
+                            timestamp: new Date().getTime()
+                        }));
+                    }
+                } catch(e) {}
+            });
+        };
+
+        carregarClima();
     }, [location.pathname]);
 
     const handleLogout = () => {
@@ -62,6 +119,14 @@ const Topbar = ({ children }) => {
                     </div>
 
                     <div className={styles.acoes}>
+                        {/* Clima Widget */}
+                        {climaGlobal && (
+                            <div className={styles.climaWidget} title="Clima Atual">
+                                <FaMapMarkerAlt className={styles.climaIcon} />
+                                <span className={styles.climaTexto}>{climaGlobal}</span>
+                            </div>
+                        )}
+
                         {/* Sino com badge pulsante se houver alertas */}
                         <div className={styles.sinoWrapper}>
                             <button

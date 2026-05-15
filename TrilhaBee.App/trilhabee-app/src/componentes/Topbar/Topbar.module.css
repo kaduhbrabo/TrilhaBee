@@ -97,7 +97,29 @@
     padding: 5px 10px;
     border-radius: 20px;
     cursor: pointer;
-    transition: background 0.15s ease;
+}
+
+/* ── CLIMA WIDGET ────────────────────────── */
+.climaWidget {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #fdfaf3;
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 1px solid #f2e8cf;
+    margin-right: 12px;
+}
+
+.climaIcon {
+    color: #fbbc05;
+    font-size: 14px;
+}
+
+.climaTexto {
+    font-size: 12px;
+    font-weight: 600;
+    color: #4b5563;
 }
 
 .perfil:hover {

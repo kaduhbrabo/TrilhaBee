@@ -25,8 +25,6 @@ export const alertaIaAPI = {
 
     resolverAsync: async (id) => {
         try {
-            // Supondo que exista um método de atualizar ou um endpoint específico
-            // Aqui enviamos um PATCH ou um PUT atualizando o status de Resolvido
             const alertaAtual = await HTTPClient.get(`${baseUrl}/${id}`);
             const payload = { ...alertaAtual.data, resolvido: true };
             
@@ -34,6 +32,16 @@ export const alertaIaAPI = {
             return resposta.data;
         } catch (erro) {
             console.error(`Erro ao resolver alerta ${id}:`, erro);
+            throw erro;
+        }
+    },
+
+    gerarAnaliseAsync: async () => {
+        try {
+            const resposta = await HTTPClient.post(`${baseUrl}/gerar`);
+            return resposta.data;
+        } catch (erro) {
+            console.error('Erro ao gerar análise IA:', erro);
             throw erro;
         }
     }

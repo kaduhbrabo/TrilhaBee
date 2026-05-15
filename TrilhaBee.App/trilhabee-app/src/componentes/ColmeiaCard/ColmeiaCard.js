@@ -1,8 +1,8 @@
 import React from 'react';
-import { FaEdit, FaTrash, FaMapMarkerAlt, FaForumbee } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaMapMarkerAlt, FaForumbee, FaCubes, FaThList } from 'react-icons/fa';
 import styles from './ColmeiaCard.module.css';
 
-const ColmeiaCard = ({ identificacao, tipoAbelha, ativa, apiarioNome, condicao, onEdit, onDelete }) => {
+const ColmeiaCard = ({ identificacao, tipoAbelha, ativa, apiarioNome, condicao, quantidadeQuadros, quantidadeMelgueiras, onEdit, onDelete }) => {
     // Determina o nível de saúde baseado na condição da última inspeção
     const nivelSaude = () => {
         if (!ativa) return 'inativa';
@@ -49,6 +49,17 @@ const ColmeiaCard = ({ identificacao, tipoAbelha, ativa, apiarioNome, condicao, 
                     <span>{apiarioNome}</span>
                 </div>
             )}
+
+            <div className={styles.estrutura}>
+                <div className={styles.estruturaItem}>
+                    <FaThList className={styles.estruturaIcon} />
+                    <span>{quantidadeQuadros || 0} quadros</span>
+                </div>
+                <div className={styles.estruturaItem}>
+                    <FaCubes className={styles.estruturaIcon} />
+                    <span>{quantidadeMelgueiras || 0} melgueiras</span>
+                </div>
+            </div>
 
             <div className={styles.acoes}>
                 <button className={styles.btnEditar} onClick={onEdit} title="Editar">
