@@ -34,16 +34,20 @@
 /* ── CARDS DE ESTATÍSTICAS ─────────────── */
 .statsGrid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     gap: 16px;
     margin-bottom: 24px;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1200px) {
+    .statsGrid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 768px) {
     .statsGrid { grid-template-columns: repeat(2, 1fr); }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 500px) {
     .statsGrid { grid-template-columns: 1fr; }
 }
 
@@ -80,6 +84,7 @@
 .verde   { background: linear-gradient(135deg, #22c55e, #16a34a); }
 .rosa    { background: linear-gradient(135deg, #ec4899, #db2777); }
 .amarelo { background: linear-gradient(135deg, #fbbc05, #d97706); }
+.roxo    { background: linear-gradient(135deg, #a855f7, #7c3aed); }
 
 .statIconWrap {
     font-size: 26px;
@@ -245,6 +250,7 @@
 .nivelAlto  { background: #fef2f2; color: #ef4444; }
 .nivelMedio { background: #fffbeb; color: #d97706; }
 .nivelBaixo { background: #f0fdf4; color: #16a34a; }
+.nivelSugestao { background: #f5f3ff; color: #7c3aed; }
 
 /* Badge pulsante para risco alto */
 .nivelAlto {
@@ -286,6 +292,33 @@
     display: flex;
     align-items: center;
     gap: 3px;
+}
+
+/* Botão Gerar Análise IA */
+.btnGerarIA {
+    background: linear-gradient(135deg, #a855f7, #7c3aed);
+    color: white;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: opacity 0.2s, transform 0.15s;
+    white-space: nowrap;
+}
+
+.btnGerarIA:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+.btnGerarIA:disabled {
+    opacity: 0.6;
+    cursor: wait;
 }
 
 /* ── ACESSO RÁPIDO ──────────────────────── */

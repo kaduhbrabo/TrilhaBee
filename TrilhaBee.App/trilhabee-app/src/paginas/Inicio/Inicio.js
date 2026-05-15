@@ -7,7 +7,7 @@ import {
 import {
     FaForumbee, FaCheckCircle, FaExclamationTriangle,
     FaClipboardCheck, FaMapMarkerAlt, FaChevronRight,
-    FaArrowRight, FaLayerGroup
+    FaArrowRight, FaLayerGroup, FaMagic, FaChartLine
 } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import Topbar from '../../componentes/Topbar/Topbar';
@@ -45,6 +45,8 @@ const Inicio = () => {
     });
     const [alertasRecentes, setAlertasRecentes] = useState([]);
     const [dadosGrafico, setDadosGrafico] = useState([]);
+    const [estimativaSafra, setEstimativaSafra] = useState(0);
+    const [gerandoIA, setGerandoIA] = useState(false);
 
     useEffect(() => {
         const carregar = async () => {
@@ -73,6 +75,12 @@ const Inicio = () => {
                 setAlertasRecentes(
                     alertas.filter(a => !a.resolvido).slice(0, 5)
                 );
+
+                // Calcula estimativa de safra
+                const totalEstimativa = colmeias
+                    .filter(c => c.ativa && c.quantidadeMelgueiras > 0)
+                    .reduce((acc, c) => acc + (c.quantidadeMelgueiras * 12.5), 0);
+                setEstimativaSafra(Math.round(totalEstimativa));
 
                 setDadosGrafico(agruparPorMes(inspecoes));
             } catch (e) {
@@ -113,11 +121,33 @@ const Inicio = () => {
             icon: <FaClipboardCheck />,
             cor: 'amarelo',
         },
+        {
+            label: 'Previsão Safra',
+            valor: `~${estimativaSafra}kg`,
+            sub: 'Estimativa de produção',
+            icon: <FaChartLine />,
+            cor: 'roxo',
+        },
     ];
 
+    const gerarAnaliseIA = async () => {
+        setGerandoIA(true);
+        try {
+            await alertaIaAPI.gerarAnaliseAsync();
+            const alertas = await alertaIaAPI.listarAsync().catch(() => []);
+            setAlertasRecentes(alertas.filter(a => !a.resolvido).slice(0, 5));
+            setStats(prev => ({ ...prev, alertasPendentes: alertas.filter(a => !a.resolvido).length }));
+        } catch(e) {
+            alert('Erro ao gerar análise.');
+        } finally {
+            setGerandoIA(false);
+        }
+    };
+
     const nivelCor = (nivel) => {
-        if (nivel === 'Alto') return styles.nivelAlto;
-        if (nivel === 'Médio') return styles.nivelMedio;
+        if (nivel === 'Alta') return styles.nivelAlto;
+        if (nivel === 'Media') return styles.nivelMedio;
+        if (nivel === 'Sugestão') return styles.nivelSugestao;
         return styles.nivelBaixo;
     };
 
@@ -221,12 +251,22 @@ const Inicio = () => {
                     <div className={styles.card}>
                         <div className={styles.cardHeader}>
                             <div>
-                                <h3 className={styles.cardTitulo}>Alertas Pendentes</h3>
-                                <p className={styles.cardSub}>Ações necessárias da IA</p>
+                                <h3 className={styles.cardTitulo}>Alertas e Sugestões IA</h3>
+                                <p className={styles.cardSub}>Análise inteligente das suas colmeias</p>
                             </div>
-                            <Link to="/alertas" className={styles.cardLink}>
-                                Ver todos <FaArrowRight />
-                            </Link>
+                            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                                <button
+                                    className={styles.btnGerarIA}
+                                    onClick={gerarAnaliseIA}
+                                    disabled={gerandoIA}
+                                    title="Gerar nova análise IA"
+                                >
+                                    <FaMagic /> {gerandoIA ? 'Analisando...' : 'Analisar'}
+                                </button>
+                                <Link to="/alertas" className={styles.cardLink}>
+                                    Ver todos <FaArrowRight />
+                                </Link>
+                            </div>
                         </div>
 
                         {alertasRecentes.length === 0 ? (

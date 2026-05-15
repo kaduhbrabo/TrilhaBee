@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Modal, Spinner, Form } from 'react-bootstrap';
-import { FaTrash, FaEdit, FaPlus, FaClipboardCheck, FaCheck, FaTimes } from 'react-icons/fa';
+import { FaTrash, FaEdit, FaPlus, FaClipboardCheck, FaCheck, FaTimes, FaMapMarkerAlt, FaSearchLocation } from 'react-icons/fa';
 import Topbar from '../../componentes/Topbar/Topbar';
 import { inspecaoAPI } from '../../services/inspecaoAPI';
 import { colmeiaAPI } from '../../services/colmeiaAPI';
@@ -48,11 +48,73 @@ const Inspecoes = () => {
             setInspecoes(dadosInspec);
             setColmeias(dadosColm);
         } catch (erro) {
-            console.error("Falha ao carregar inspeções", erro);
+            console.error('Erro ao buscar dados:', erro);
         } finally {
             setCarregando(false);
         }
     };
+
+    // Cole sua API Key do OpenWeather aqui dentro das aspas!
+    const OPENWEATHER_API_KEY = '4d311f9a29f0f074a07b79cc1248ccb5';
+
+    const buscarClimaGPS = () => {
+        if (!navigator.geolocation) {
+            alert("Geolocalização não suportada. Digite manualmente.");
+            return;
+        }
+        setFormData(prev => ({...prev, clima: 'Buscando GPS...'}));
+        navigator.geolocation.getCurrentPosition(async (pos) => {
+            const { latitude, longitude } = pos.coords;
+            if(!OPENWEATHER_API_KEY) {
+                setFormData(prev => ({...prev, clima: ''}));
+                alert('Chave API não configurada.');
+                return;
+            }
+            try {
+                const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${OPENWEATHER_API_KEY}&lang=pt_br&units=metric`);
+                const data = await res.json();
+                if(data.weather && data.weather.length > 0) {
+                    const cidade = data.name;
+                    const desc = data.weather[0].description;
+                    const temp = Math.round(data.main.temp);
+                    setFormData(prev => ({...prev, clima: `${cidade} - ${desc.charAt(0).toUpperCase() + desc.slice(1)}, ${temp}°C`}));
+                } else {
+                    setFormData(prev => ({...prev, clima: ''}));
+                }
+            } catch(e) {
+                setFormData(prev => ({...prev, clima: ''}));
+            }
+        }, (err) => {
+            setFormData(prev => ({...prev, clima: ''}));
+            alert('Permissão de GPS negada.');
+        });
+    };
+
+    const buscarClimaCidade = async () => {
+        const cidade = prompt('Digite o nome da cidade (Ex: Alfenas, BR):', 'Alfenas, BR');
+        if(!cidade) return;
+        if(!OPENWEATHER_API_KEY) {
+            alert('Chave API não configurada.');
+            return;
+        }
+        setFormData(prev => ({...prev, clima: 'Buscando Cidade...'}));
+        try {
+            const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cidade}&appid=${OPENWEATHER_API_KEY}&lang=pt_br&units=metric`);
+            const data = await res.json();
+            if(data.weather && data.weather.length > 0) {
+                const cidadeResp = data.name;
+                const desc = data.weather[0].description;
+                const temp = Math.round(data.main.temp);
+                setFormData(prev => ({...prev, clima: `${cidadeResp} - ${desc.charAt(0).toUpperCase() + desc.slice(1)}, ${temp}°C`}));
+            } else {
+                setFormData(prev => ({...prev, clima: ''}));
+                alert('Cidade não encontrada.');
+            }
+        } catch(e) {
+            setFormData(prev => ({...prev, clima: ''}));
+        }
+    };
+
 
     // Helper Nome Colmeia
     const getNomeColmeia = (id) => {
@@ -88,7 +150,7 @@ const Inspecoes = () => {
         setFormData({
             colmeiaID: '',
             dataInspecao: new Date().toISOString().split('T')[0],
-            clima: 'Ensolarado',
+            clima: '',
             temperamento: 'Calmas',
             forcaColmeia: 5,
             nivelAlimento: 5,
@@ -102,9 +164,27 @@ const Inspecoes = () => {
         setMostrarModalForm(true);
     };
 
+    const extrairMel = (obs) => {
+        if (!obs) return { kg: '', data: '', textoLimpo: '' };
+        const match = obs.match(/\[Colheita: ([\d.]+)kg em ([\d/]+)\]/);
+        if (match) {
+            const textoLimpo = obs.replace(/\[Colheita:.*?\]\s*-\s*/, '').replace(/\[Colheita:.*?\]/, '').trim();
+            let dataFormatada = '';
+            const partesData = match[2].split('/');
+            if (partesData.length === 3) {
+                dataFormatada = `${partesData[2]}-${partesData[1]}-${partesData[0]}`;
+            }
+            return { kg: match[1], data: dataFormatada, textoLimpo };
+        }
+        return { kg: '', data: '', textoLimpo: obs };
+    };
+
     const abrirModalEditar = (inspecao) => {
         setModoEdicao(true);
         setInspecaoSelecionada(inspecao);
+        
+        const melExtraido = extrairMel(inspecao.observacoes);
+
         setFormData({
             colmeiaID: inspecao.colmeiaID,
             dataInspecao: inspecao.dataInspecao.split('T')[0],
@@ -115,9 +195,9 @@ const Inspecoes = () => {
             temRainha: inspecao.temRainha,
             temPostura: inspecao.temPostura,
             condicaoGeral: inspecao.condicaoGeral,
-            melColetadoKg: inspecao.melColetadoKg || '',
-            dataColheita: inspecao.dataColheita ? inspecao.dataColheita.split('T')[0] : '',
-            observacoes: inspecao.observacoes || ''
+            melColetadoKg: melExtraido.kg,
+            dataColheita: melExtraido.data,
+            observacoes: melExtraido.textoLimpo
         });
         setMostrarModalForm(true);
     };
@@ -192,6 +272,8 @@ const Inspecoes = () => {
                                 <tr>
                                     <th>Data</th>
                                     <th>Colmeia</th>
+                                    <th>Apiário</th>
+                                    <th>Clima</th>
                                     <th>Condição</th>
                                     <th>Alimento</th>
                                     <th>Rainha / Postura</th>
@@ -203,7 +285,9 @@ const Inspecoes = () => {
                                 {inspecoes.map(inspec => (
                                     <tr key={inspec.inspecaoID}>
                                         <td style={{ fontWeight: 600 }}>{new Date(inspec.dataInspecao).toLocaleDateString('pt-BR')}</td>
-                                        <td>{getNomeColmeia(inspec.colmeiaID)}</td>
+                                        <td style={{ fontWeight: 500 }}>{inspec.colmeiaNome || getNomeColmeia(inspec.colmeiaID)}</td>
+                                        <td style={{ color: '#8a8fa8', fontSize: '12px' }}>{inspec.apiarioNome || '—'}</td>
+                                        <td style={{ fontSize: '13px', color: '#4b5563' }}>{inspec.clima || '—'}</td>
                                         <td>
                                             <span className={`badge ${inspec.condicaoGeral === 'Ruim' ? 'bg-danger' : inspec.condicaoGeral === 'Regular' ? 'bg-warning text-dark' : 'bg-success'}`}>
                                                 {inspec.condicaoGeral}
@@ -220,7 +304,7 @@ const Inspecoes = () => {
                                                 : <FaTimes style={{ color: '#ef4444' }} />}
                                         </td>
                                         <td style={{ color: '#d97706', fontWeight: 600 }}>
-                                            {inspec.melColetadoKg ? `${inspec.melColetadoKg} kg` : <span style={{ color: '#d1cec7' }}>—</span>}
+                                            {extrairMel(inspec.observacoes).kg ? `${extrairMel(inspec.observacoes).kg} kg` : <span style={{ color: '#d1cec7' }}>—</span>}
                                         </td>
                                         <td className="text-center">
                                             <Button variant="light" size="sm" className="me-1 text-primary" onClick={() => abrirModalEditar(inspec)}><FaEdit /></Button>
@@ -257,13 +341,25 @@ const Inspecoes = () => {
                         
                         <div className="row">
                             <Form.Group className="col-md-6 mb-3">
-                                <Form.Label>Clima</Form.Label>
-                                <Form.Select name="clima" value={formData.clima} onChange={handleFormChange}>
-                                    <option>Ensolarado</option>
-                                    <option>Nublado</option>
-                                    <option>Chuvoso</option>
-                                    <option>Frio</option>
-                                </Form.Select>
+                                <Form.Label>Clima atual na região</Form.Label>
+                                <div className="input-group">
+                                    <Form.Control 
+                                        type="text" 
+                                        name="clima" 
+                                        value={formData.clima} 
+                                        onChange={handleFormChange} 
+                                        placeholder="Ex: Nublado, 22°C" 
+                                    />
+                                    <Button variant="outline-secondary" onClick={buscarClimaGPS} title="Usar GPS" style={{ borderColor: '#ced4da', backgroundColor: '#f8f9fa' }}>
+                                        <FaMapMarkerAlt className="text-primary" />
+                                    </Button>
+                                    <Button variant="outline-secondary" onClick={buscarClimaCidade} title="Buscar Cidade" style={{ borderColor: '#ced4da', backgroundColor: '#f8f9fa' }}>
+                                        <FaSearchLocation className="text-warning" />
+                                    </Button>
+                                </div>
+                                <Form.Text className="text-muted">
+                                    Busque na internet via botões ou digite manualmente.
+                                </Form.Text>
                             </Form.Group>
                             <Form.Group className="col-md-6 mb-3">
                                 <Form.Label>Condição Geral</Form.Label>

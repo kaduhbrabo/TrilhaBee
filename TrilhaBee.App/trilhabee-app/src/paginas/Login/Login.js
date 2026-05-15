@@ -19,11 +19,10 @@ const Login = () => {
         try {
             const resposta = await authAPI.loginAsync(email, senha);
             if (resposta.token) {
-                // Salva o token no navegador
                 localStorage.setItem('token', resposta.token);
                 localStorage.setItem('usuarioNome', resposta.usuario);
-                // Redireciona para o painel de apiários
-                navigate('/apiarios');
+                localStorage.setItem('usuarioID', resposta.usuarioID);
+                navigate('/inicio');
             }
         } catch (err) {
             setErro('E-mail ou senha inválidos. Tente novamente.');

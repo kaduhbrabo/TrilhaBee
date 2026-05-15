@@ -13,18 +13,14 @@ body {
   font-size: 14px;
   color: #1a1a2e;
 
-  /* Fundo creme com faixas diagonais sutis — tema abelha */
-  background-color: #f7f5f0;
+  /* Fundo com faixas diagonais preto e amarelo (estilo abelha autêntico) */
+  background-color: #fefaf6;
   background-image: repeating-linear-gradient(
     -45deg,
-    transparent,
-    transparent 28px,
-    rgba(251, 188, 5, 0.035) 28px,
-    rgba(251, 188, 5, 0.035) 30px,
-    transparent 30px,
-    transparent 58px,
-    rgba(0, 0, 0, 0.018) 58px,
-    rgba(0, 0, 0, 0.018) 60px
+    rgba(251, 188, 5, 0.06), /* Amarelo */
+    rgba(251, 188, 5, 0.06) 15px,
+    rgba(0, 0, 0, 0.06) 15px, /* Preto */
+    rgba(0, 0, 0, 0.06) 30px
   );
   min-height: 100vh;
 }

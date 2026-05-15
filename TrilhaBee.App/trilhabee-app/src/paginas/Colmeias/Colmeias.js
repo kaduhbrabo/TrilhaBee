@@ -17,7 +17,7 @@ const Colmeias = () => {
     const [colmeiaSelecionada, setColmeiaSelecionada] = useState(null);
     const [mostrarModalForm, setMostrarModalForm] = useState(false);
     const [modoEdicao, setModoEdicao] = useState(false);
-    const [formData, setFormData] = useState({ identificacao: '', tipoAbelha: '', ativa: true, apiarioID: '' });
+    const [formData, setFormData] = useState({ identificacao: '', tipoAbelha: '', ativa: true, apiarioID: '', quantidadeQuadros: 10, quantidadeMelgueiras: 0 });
     const [salvando, setSalvando] = useState(false);
 
     useEffect(() => { carregarDados(); }, []);
@@ -64,14 +64,21 @@ const Colmeias = () => {
     // Formulário
     const abrirNovo = () => {
         setModoEdicao(false);
-        setFormData({ identificacao: '', tipoAbelha: '', ativa: true, apiarioID: '' });
+        setFormData({ identificacao: '', tipoAbelha: '', ativa: true, apiarioID: '', quantidadeQuadros: 10, quantidadeMelgueiras: 0 });
         setMostrarModalForm(true);
     };
 
     const abrirEditar = (c) => {
         setModoEdicao(true);
         setColmeiaSelecionada(c);
-        setFormData({ identificacao: c.identificacao, tipoAbelha: c.tipoAbelha, ativa: c.ativa, apiarioID: c.apiarioID || '' });
+        setFormData({
+            identificacao: c.identificacao,
+            tipoAbelha: c.tipoAbelha,
+            ativa: c.ativa,
+            apiarioID: c.apiarioID || '',
+            quantidadeQuadros: c.quantidadeQuadros || 10,
+            quantidadeMelgueiras: c.quantidadeMelgueiras || 0
+        });
         setMostrarModalForm(true);
     };
 
@@ -84,7 +91,12 @@ const Colmeias = () => {
         e.preventDefault();
         setSalvando(true);
         try {
-            const payload = { ...formData, apiarioID: parseInt(formData.apiarioID) };
+            const payload = {
+                ...formData,
+                apiarioID: parseInt(formData.apiarioID),
+                quantidadeQuadros: parseInt(formData.quantidadeQuadros) || 10,
+                quantidadeMelgueiras: parseInt(formData.quantidadeMelgueiras) || 0
+            };
             if (modoEdicao) await colmeiaAPI.atualizarAsync(colmeiaSelecionada.colmeiaID, payload);
             else await colmeiaAPI.criarAsync(payload);
             setMostrarModalForm(false);
@@ -157,6 +169,8 @@ const Colmeias = () => {
                                 tipoAbelha={c.tipoAbelha}
                                 ativa={c.ativa}
                                 apiarioNome={getNomeApiario(c.apiarioID)}
+                                quantidadeQuadros={c.quantidadeQuadros}
+                                quantidadeMelgueiras={c.quantidadeMelgueiras}
                                 onEdit={() => abrirEditar(c)}
                                 onDelete={() => { setColmeiaSelecionada(c); setMostrarModalDel(true); }}
                             />
@@ -204,6 +218,20 @@ const Colmeias = () => {
                             </Form.Select>
                         </Form.Group>
                         <Form.Check type="switch" id="ativa-switch" label="Colmeia Ativa" name="ativa" checked={formData.ativa} onChange={handleChange} />
+                        <div className="row mt-3">
+                            <div className="col-6">
+                                <Form.Group>
+                                    <Form.Label className={styles.formLabel}>Qtd. Quadros</Form.Label>
+                                    <Form.Control size="sm" type="number" name="quantidadeQuadros" value={formData.quantidadeQuadros} onChange={handleChange} min="0" />
+                                </Form.Group>
+                            </div>
+                            <div className="col-6">
+                                <Form.Group>
+                                    <Form.Label className={styles.formLabel}>Qtd. Melgueiras</Form.Label>
+                                    <Form.Control size="sm" type="number" name="quantidadeMelgueiras" value={formData.quantidadeMelgueiras} onChange={handleChange} min="0" />
+                                </Form.Group>
+                            </div>
+                        </div>
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="light" onClick={() => setMostrarModalForm(false)}>Cancelar</Button>

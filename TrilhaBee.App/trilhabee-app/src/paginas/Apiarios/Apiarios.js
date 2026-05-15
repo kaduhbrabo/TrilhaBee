@@ -94,11 +94,12 @@ const Apiarios = () => {
         setSalvando(true);
 
         try {
-            // Regra do Backend: Apiario precisa de um UsuarioID
+            // Usa o ID real do usuário logado
+            const usuarioID = parseInt(localStorage.getItem('usuarioID') || '0');
             const payload = {
                 ...formData,
                 capacidade: parseInt(formData.capacidade),
-                usuarioID: 1 // Chumbado provisoriamente
+                usuarioID: usuarioID
             };
 
             if (modoEdicao) {
