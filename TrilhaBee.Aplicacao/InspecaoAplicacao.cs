@@ -23,7 +23,10 @@ namespace TrilhaBee.Aplicacao
 
         public void Criar(Inspecao inspecao)
         {
-            inspecao.DataInspecao = DateTime.Now;
+            if (inspecao.DataInspecao == default(DateTime))
+            {
+                inspecao.DataInspecao = DateTime.Now;
+            }
             _inspecaoRepositorio.Adicionar(inspecao);
 
             // Integração com IA
@@ -54,7 +57,12 @@ namespace TrilhaBee.Aplicacao
             
             existente.Observacoes = inspecao.Observacoes;
             existente.TemRainha = inspecao.TemRainha;
+            existente.TemPostura = inspecao.TemPostura;
             existente.CondicaoGeral = inspecao.CondicaoGeral;
+            existente.ForcaColmeia = inspecao.ForcaColmeia;
+            existente.NivelAlimento = inspecao.NivelAlimento;
+            existente.Clima = inspecao.Clima;
+            existente.Temperamento = inspecao.Temperamento;
 
             _inspecaoRepositorio.Atualizar(existente);
         }

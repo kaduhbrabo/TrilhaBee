@@ -45,6 +45,20 @@ namespace TrilhaBee.API.Controllers
             }
         }
 
+        [HttpPost("gerar")]
+        public IActionResult GerarAnalise()
+        {
+            try
+            {
+                _alertaIAAplicacao.GerarAnaliseInteligente();
+                return Ok(new { mensagem = "Análise inteligente concluída." });
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(new { erro = ex.Message });
+            }
+        }
+
         [HttpPut("{id}")]
         public IActionResult Atualizar(int id, [FromBody] AlertaIA alertaIA)
         {

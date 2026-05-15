@@ -30,12 +30,13 @@ namespace TrilhaBee.API.Controllers
             {
                 var usuario = _usuarioAplicacao.ValidarLogin(request.Email, request.Senha);
 
-                var token = GerarTokenJwt(usuario.Email);
+                var token = GerarTokenJwt(usuario.Email, usuario.UsuarioID);
 
                 return Ok(new LoginResponse
                 {
                     Token = token,
-                    Usuario = usuario.Nome
+                    Usuario = usuario.Nome,
+                    UsuarioID = usuario.UsuarioID
                 });
             }
             catch (Exception ex)
@@ -44,7 +45,7 @@ namespace TrilhaBee.API.Controllers
             }
         }
 
-        private string GerarTokenJwt(string email)
+        private string GerarTokenJwt(string email, int usuarioId)
         {
             var jwtSettings = _configuration.GetSection("JwtSettings");
             var key = Encoding.ASCII.GetBytes(jwtSettings["Key"]);
@@ -54,7 +55,8 @@ namespace TrilhaBee.API.Controllers
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-                    new Claim(ClaimTypes.Email, email)
+                    new Claim(ClaimTypes.Email, email),
+                    new Claim(ClaimTypes.NameIdentifier, usuarioId.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddMinutes(double.Parse(jwtSettings["ExpiryMinutes"])),
                 Issuer = jwtSettings["Issuer"],
