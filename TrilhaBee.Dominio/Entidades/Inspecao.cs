@@ -19,5 +19,11 @@ namespace TrilhaBee.Dominio.Entidades
         public int ColmeiaID { get; set; }
         public Colmeia Colmeia { get; set; }
         public ICollection<AcaoManejo> AcoesManejo { get; set; }
+
+        [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+        public string ColmeiaNome { get; set; }
+        
+        [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+        public string ApiarioNome { get; set; }
     }
 }

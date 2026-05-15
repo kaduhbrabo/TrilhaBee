@@ -10,6 +10,8 @@ namespace TrilhaBee.Dominio.Entidades
         public string TipoAbelha { get; set; }
         public DateTime DataInstalacao { get; set; }
         public bool Ativa { get; set; }
+        public int QuantidadeQuadros { get; set; }
+        public int QuantidadeMelgueiras { get; set; }
         
         // Relacionamentos
         public int ApiarioID { get; set; }

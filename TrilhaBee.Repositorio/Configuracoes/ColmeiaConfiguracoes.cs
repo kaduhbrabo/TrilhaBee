@@ -16,6 +16,8 @@ namespace TrilhaBee.Repositorio.Configuracoes
             builder.Property(c => c.TipoAbelha).HasColumnName("TipoAbelha").HasMaxLength(100);
             builder.Property(c => c.DataInstalacao).HasColumnName("DataInstalacao").IsRequired(true);
             builder.Property(c => c.Ativa).HasColumnName("Ativa").IsRequired(true);
+            builder.Property(c => c.QuantidadeQuadros).HasColumnName("QuantidadeQuadros").IsRequired(true).HasDefaultValue(10);
+            builder.Property(c => c.QuantidadeMelgueiras).HasColumnName("QuantidadeMelgueiras").IsRequired(true).HasDefaultValue(0);
 
             // Relacionamentos
             builder.HasOne(c => c.Apiario)

@@ -11,6 +11,9 @@ namespace TrilhaBee.Dominio.Entidades
         public DateTime DataCriacao { get; set; }
         public int Capacidade { get; set; }
         
+        [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+        public int TotalColmeia { get; set; }
+        
         // Relacionamentos
         public int UsuarioID { get; set; }
         public Usuario Usuario { get; set; }
