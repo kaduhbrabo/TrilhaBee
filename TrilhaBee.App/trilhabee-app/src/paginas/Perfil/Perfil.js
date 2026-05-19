@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-    FaUserCircle, FaCheck, FaPalette, FaSignOutAlt,
+    FaUserCircle, FaCheck, FaSignOutAlt,
     FaEdit, FaSave, FaTimes, FaShieldAlt
 } from 'react-icons/fa';
 import Topbar from '../../componentes/Topbar/Topbar';
-import { useTema, TEMAS } from '../../context/ThemeContext';
 import styles from './Perfil.module.css';
 
 const Perfil = () => {
     const navigate = useNavigate();
-    const { tema, setTema } = useTema();
 
     const [nomeAtual, setNomeAtual] = useState(localStorage.getItem('usuarioNome') || 'Apicultor');
     const [editandoNome, setEditandoNome] = useState(false);
@@ -103,40 +101,6 @@ const Perfil = () => {
                             <FaShieldAlt className={styles.infoIcon} />
                             <span>O nome é salvo localmente no dispositivo</span>
                         </div>
-                    </div>
-
-                    {/* Card: Tema */}
-                    <div className={styles.card}>
-                        <div className={styles.cardHeader}>
-                            <FaPalette className={styles.cardIcone} />
-                            <h2 className={styles.cardTitulo}>Aparência</h2>
-                        </div>
-
-                        <p className={styles.cardDescricao}>
-                            Escolha o tema que melhor combina com seu estilo de trabalho.
-                        </p>
-
-                        <div className={styles.temasGrid}>
-                            {Object.entries(TEMAS).map(([chave, config]) => (
-                                <button
-                                    key={chave}
-                                    className={`${styles.temaCard} ${tema === chave ? styles.temaAtivo : ''}`}
-                                    onClick={() => setTema(chave)}
-                                >
-                                    <span className={styles.temaLabel}>{config.label}</span>
-                                    {tema === chave && (
-                                        <span className={styles.temaBadge}>
-                                            <FaCheck />
-                                        </span>
-                                    )}
-                                    <div className={styles.temaPreview} data-tema-preview={chave} />
-                                </button>
-                            ))}
-                        </div>
-
-                        <p className={styles.temaAtualLabel}>
-                            Tema atual: <strong>{TEMAS[tema]?.label}</strong>
-                        </p>
                     </div>
 
                     {/* Card: Sessão */}

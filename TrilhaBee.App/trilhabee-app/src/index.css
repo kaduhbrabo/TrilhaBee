@@ -6,17 +6,15 @@
   padding: 0;
 }
 
-/* ── Variáveis padrão (tema Creme) ─────── */
+/* ── Variáveis (Tema Único: Creme com Colmeia) ─────── */
 :root {
-  --bg-pagina:       #fefaf6;
+  --bg-pagina:       #f3efe8;
   --bg-card:         #ffffff;
   --bg-sidebar:      #1a1a2e;
   --bg-topbar:       #1a1a2e;
   --text-primario:   #1a1a2e;
-  --text-secundario: #8a8fa8;
-  --border-color:    #f0ede8;
-  --stripe-a:        rgba(251,188,5,0.06);
-  --stripe-b:        rgba(0,0,0,0.04);
+  --text-secundario: #4b5563; /* Escurecido para melhorar a leitura dos subtítulos */
+  --border-color:    #fcd34d; /* Amarelo/Dourado suave para os cards se destacarem */
 }
 
 body {
@@ -27,21 +25,17 @@ body {
   color: var(--text-primario);
 
   background-color: var(--bg-pagina);
-  background-image: repeating-linear-gradient(
-    -45deg,
-    var(--stripe-a),
-    var(--stripe-a) 15px,
-    var(--stripe-b) 15px,
-    var(--stripe-b) 30px
-  );
+  background-image: url("data:image/svg+xml,%3Csvg width='56' height='98' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M28 66L0 50L0 16L28 0L56 16L56 50L28 66L28 100' fill='none' stroke='%23fbbc05' stroke-opacity='0.4' stroke-width='3'/%3E%3Cpath d='M28 0L28 34L0 50L-28 34L-28 0L0 -16L28 0' fill='none' stroke='%23fbbc05' stroke-opacity='0.4' stroke-width='3'/%3E%3C/svg%3E");
+  background-attachment: fixed;
   min-height: 100vh;
-  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* ── Utilitários globais ─────────────── */
-h1, h2, h3, h4, h5, h6 {
+h1, h2, h3, h4, h5, h6,
+[class*="titulo"], [class*="subtitulo"] {
   font-family: 'Inter', sans-serif;
-  font-weight: 700;
+  /* Halo branco ao redor do texto para garantir leitura perfeita por cima dos hexágonos */
+  text-shadow: 0 2px 5px rgba(255, 255, 255, 0.9), 0 0 15px rgba(255, 255, 255, 1), 0 0 30px rgba(255, 255, 255, 1);
 }
 
 code {

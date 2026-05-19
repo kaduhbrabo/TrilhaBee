@@ -5,11 +5,13 @@ import Topbar from '../../componentes/Topbar/Topbar';
 import ColmeiaCard from '../../componentes/ColmeiaCard/ColmeiaCard';
 import { colmeiaAPI } from '../../services/colmeiaAPI';
 import { apiarioAPI } from '../../services/apiarioAPI';
+import { inspecaoAPI } from '../../services/inspecaoAPI';
 import styles from './Colmeias.module.css';
 
 const Colmeias = () => {
     const [colmeias, setColmeias] = useState([]);
     const [apiarios, setApiarios] = useState([]);
+    const [inspecoes, setInspecoes] = useState([]);
     const [carregando, setCarregando] = useState(true);
     const [filtro, setFiltro] = useState('todas');
 
@@ -25,12 +27,14 @@ const Colmeias = () => {
     const carregarDados = async () => {
         try {
             setCarregando(true);
-            const [dadosColmeias, dadosApiarios] = await Promise.all([
+            const [dadosColmeias, dadosApiarios, dadosInspecoes] = await Promise.all([
                 colmeiaAPI.listarAsync(),
-                apiarioAPI.listarAsync()
+                apiarioAPI.listarAsync(),
+                inspecaoAPI.listarAsync().catch(() => [])
             ]);
             setColmeias(dadosColmeias);
             setApiarios(dadosApiarios);
+            setInspecoes(dadosInspecoes);
         } catch (erro) {
             console.error('Falha ao carregar colmeias', erro);
         } finally {
@@ -50,6 +54,18 @@ const Colmeias = () => {
     const getNomeApiario = (id) => {
         const a = apiarios.find(a => a.apiarioID === id);
         return a ? a.nome : '';
+    };
+
+    const getCondicaoColmeia = (colmeiaID) => {
+        // Pega as inspeções desta colmeia e ordena pela data mais recente
+        const inspecoesColmeia = inspecoes
+            .filter(i => i.colmeiaID === colmeiaID)
+            .sort((a, b) => new Date(b.dataInspecao) - new Date(a.dataInspecao));
+        
+        if (inspecoesColmeia.length > 0) {
+            return inspecoesColmeia[0].condicaoGeral;
+        }
+        return 'Boa'; // Padrão se não houver inspeção
     };
 
     // Exclusão
@@ -168,6 +184,7 @@ const Colmeias = () => {
                                 identificacao={c.identificacao}
                                 tipoAbelha={c.tipoAbelha}
                                 ativa={c.ativa}
+                                condicao={getCondicaoColmeia(c.colmeiaID)}
                                 apiarioNome={getNomeApiario(c.apiarioID)}
                                 quantidadeQuadros={c.quantidadeQuadros}
                                 quantidadeMelgueiras={c.quantidadeMelgueiras}

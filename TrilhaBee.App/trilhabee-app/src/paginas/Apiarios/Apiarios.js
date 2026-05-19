@@ -145,7 +145,6 @@ const Apiarios = () => {
                         <Table responsive hover className="align-middle">
                             <thead className={styles.tabelaHeader}>
                                 <tr>
-                                    <th>ID</th>
                                     <th>Nome</th>
                                     <th>Localização</th>
                                     <th>Capacidade (Colmeias)</th>
@@ -155,7 +154,6 @@ const Apiarios = () => {
                             <tbody>
                                 {apiarios.map((apiario) => (
                                     <tr key={apiario.apiarioID}>
-                                        <td>#{apiario.apiarioID}</td>
                                         <td className="fw-bold">{apiario.nome}</td>
                                         <td>{apiario.localizacao}</td>
                                         <td>{apiario.totalColmeia || 0} / {apiario.capacidade}</td>

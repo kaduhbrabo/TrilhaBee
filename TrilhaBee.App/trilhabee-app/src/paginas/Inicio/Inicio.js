@@ -7,7 +7,7 @@ import {
 import {
     FaForumbee, FaCheckCircle, FaExclamationTriangle,
     FaClipboardCheck, FaChevronRight,
-    FaArrowRight, FaLayerGroup, FaMagic, FaChartLine
+    FaArrowRight, FaChartLine
 } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 import Topbar from '../../componentes/Topbar/Topbar';
@@ -46,7 +46,6 @@ const Inicio = () => {
     const [alertasRecentes, setAlertasRecentes] = useState([]);
     const [dadosGrafico, setDadosGrafico] = useState([]);
     const [estimativaSafra, setEstimativaSafra] = useState(0);
-    const [gerandoIA, setGerandoIA] = useState(false);
 
     useEffect(() => {
         const carregar = async () => {
@@ -92,36 +91,17 @@ const Inicio = () => {
     const statCards = [
         { label: 'Total de Colmeias',  valor: stats.totalColmeias,    sub: `${stats.totalApiarios} apiários gerenciados`,            icon: <FaForumbee />,          cor: 'laranja', rota: '/colmeias'  },
         { label: 'Colmeias Ativas',    valor: stats.colmeiasAtivas,   sub: `${stats.totalColmeias - stats.colmeiasAtivas} inativas`,  icon: <FaCheckCircle />,       cor: 'verde',   rota: '/colmeias'  },
-        { label: 'Alertas Pendentes',  valor: stats.alertasPendentes, sub: 'Requerem atenção',                                        icon: <FaExclamationTriangle />,cor: stats.alertasPendentes > 0 ? 'rosa' : 'verde', rota: '/alertas' },
+        { label: 'Recomendações',valor: stats.alertasPendentes, sub: 'Requerem atenção',                                        icon: <FaExclamationTriangle />,cor: stats.alertasPendentes > 0 ? 'rosa' : 'verde', rota: '/alertas' },
         { label: 'Inspeções este Mês', valor: stats.inspecoesMes,     sub: 'Registros do mês atual',                                  icon: <FaClipboardCheck />,    cor: 'amarelo', rota: '/inspecoes' },
-        { label: 'Previsão Safra',     valor: `~${estimativaSafra}kg`,sub: 'Estimativa de produção',                                  icon: <FaChartLine />,         cor: 'roxo',    rota: '/colheita'  },
+        { label: 'Previsão Safra',     valor: `${estimativaSafra}kg`,sub: 'Estimativa de produção',                                  icon: <FaChartLine />,         cor: 'roxo',    rota: '/colheita'  },
     ];
 
-    const gerarAnaliseIA = async () => {
-        setGerandoIA(true);
-        try {
-            await alertaIaAPI.gerarAnaliseAsync();
-            const alertasAtualizados = await alertaIaAPI.listarAsync().catch(() => []);
-            setAlertasRecentes(alertasAtualizados.filter(a => !a.resolvido).slice(0, 5));
-            setStats(prev => ({ ...prev, alertasPendentes: alertasAtualizados.filter(a => !a.resolvido).length }));
-        } catch(e) {
-            console.error('Erro ao gerar análise automática da IA:', e);
-        } finally {
-            setGerandoIA(false);
-        }
-    };
-
-    // Dispara a IA automaticamente após carregar os dados
-    useEffect(() => {
-        if (!carregando) {
-            gerarAnaliseIA();
-        }
-    }, [carregando]);
+    // O disparo da IA agora é feito exclusivamente pelo backend ao salvar uma Inspeção
 
     const nivelCor = (nivel) => {
         if (nivel === 'Alta') return styles.nivelAlto;
         if (nivel === 'Media') return styles.nivelMedio;
-        if (nivel === 'Sugestão') return styles.nivelSugestao;
+        if (nivel === 'Sugestão' || nivel === 'Parecer') return styles.nivelSugestao;
         return styles.nivelBaixo;
     };
 
@@ -208,11 +188,10 @@ const Inicio = () => {
                     <div className={styles.card}>
                         <div className={styles.cardHeader}>
                             <div>
-                                <h3 className={styles.cardTitulo}>Alertas e Sugestões IA</h3>
-                                <p className={styles.cardSub}>Análise inteligente das suas colmeias</p>
+                                <h3 className={styles.cardTitulo}>Ações Recomendadas</h3>
+                                <p className={styles.cardSub}>Plano de ação baseado nas suas inspeções recentes</p>
                             </div>
                             <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                                {gerandoIA && <span style={{ fontSize: '12px', color: '#8a8fa8' }}><Spinner size="sm" animation="border" style={{ marginRight: '5px' }}/> Analisando...</span>}
                                 <Link to="/alertas" className={styles.cardLink}>
                                     Ver todos <FaArrowRight />
                                 </Link>
@@ -222,8 +201,8 @@ const Inicio = () => {
                         {alertasRecentes.length === 0 ? (
                             <div className={styles.semDados}>
                                 <FaCheckCircle className={styles.semDadosIconVerde} />
-                                <p>Nenhum alerta pendente.</p>
-                                <span className={styles.semDadosSub}>Tudo sob controle!</span>
+                                <p>Nenhuma recomendação pendente.</p>
+                                <span className={styles.semDadosSub}>Manejos em dia!</span>
                             </div>
                         ) : (
                             <div className={styles.alertasList}>
@@ -239,7 +218,7 @@ const Inicio = () => {
                                                 {new Date(alerta.dataGeracao).toLocaleDateString('pt-BR')}
                                             </span>
                                             <Link to="/alertas" className={styles.alertaLink}>
-                                                Resolver <FaChevronRight />
+                                                Manejo Realizado <FaChevronRight />
                                             </Link>
                                         </div>
                                     </div>

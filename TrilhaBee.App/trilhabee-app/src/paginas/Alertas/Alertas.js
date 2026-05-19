@@ -60,8 +60,9 @@ const Alertas = () => {
     const resolvidos = alertas.filter(a => a.resolvido).length;
 
     const nivelClasse = (nivel) => {
-        if (nivel === 'Alto') return styles.alto;
-        if (nivel === 'Médio') return styles.medio;
+        if (nivel === 'Alta' || nivel === 'Alto') return styles.alto;
+        if (nivel === 'Media' || nivel === 'Médio') return styles.medio;
+        if (nivel === 'Parecer') return styles.sugestao; // Adicionar classe se necessário no CSS
         return styles.baixo;
     };
 
@@ -70,8 +71,8 @@ const Alertas = () => {
             <div className={styles.pagina}>
                 <div className={styles.cabecalho}>
                     <div>
-                        <h2 className={styles.titulo}>Alertas de Inteligência Artificial</h2>
-                        <p className={styles.subtitulo}>Recomendações geradas com base nas inspeções das colmeias</p>
+                        <h2 className={styles.titulo}>Recomendações de Manejo</h2>
+                        <p className={styles.subtitulo}>Plano de ação baseado nas suas últimas inspeções</p>
                     </div>
                 </div>
 
@@ -90,7 +91,7 @@ const Alertas = () => {
                         onClick={() => setFiltro('resolvidos')}
                     >
                         <FaCheckCircle className="me-1" />
-                        Resolvidos
+                        Realizados
                         {resolvidos > 0 && <span className={styles.badgeVerde}>{resolvidos}</span>}
                     </button>
                     <button
@@ -111,7 +112,7 @@ const Alertas = () => {
                     <div className={styles.vazio}>
                         <FaCheckCircle className={styles.vazioIcone} />
                         <strong>
-                            {filtro === 'pendentes' ? 'Nenhum alerta pendente!' : 'Nenhum alerta encontrado.'}
+                            {filtro === 'pendentes' ? 'Nenhuma recomendação pendente!' : 'Nenhuma recomendação encontrada.'}
                         </strong>
                         <span>{filtro === 'pendentes' ? 'Tudo sob controle por aqui.' : 'Tente outro filtro.'}</span>
                     </div>
@@ -126,7 +127,7 @@ const Alertas = () => {
                                     <div className={styles.cardEsquerda}>
                                         <span className={`${styles.nivelBadge} ${nivelClasse(alerta.nivelGravidade)}`}>
                                             <FaExclamationTriangle className="me-1" />
-                                            Risco {alerta.nivelGravidade}
+                                            {alerta.nivelGravidade === 'Parecer' ? 'Recomendação' : `Risco ${alerta.nivelGravidade}`}
                                         </span>
                                         <strong className={styles.colmeiaNome}>
                                             {getNomeColmeia(alerta.colmeiaID)}
@@ -142,7 +143,7 @@ const Alertas = () => {
                                 <div className={styles.cardRodape}>
                                     {alerta.resolvido ? (
                                         <span className={styles.resolvidoTag}>
-                                            <FaCheckCircle className="me-1" /> Resolvido
+                                            <FaCheckCircle className="me-1" /> Manejo Realizado
                                         </span>
                                     ) : (
                                         <Button
@@ -152,7 +153,7 @@ const Alertas = () => {
                                             disabled={resolvendo === alerta.alertaIAID}
                                         >
                                             {resolvendo === alerta.alertaIAID ? 'Resolvendo...' : (
-                                                <><FaCheckCircle className="me-1" /> Marcar como Resolvido</>
+                                                <><FaCheckCircle className="me-1" /> Marcar Manejo Realizado</>
                                             )}
                                         </Button>
                                     )}

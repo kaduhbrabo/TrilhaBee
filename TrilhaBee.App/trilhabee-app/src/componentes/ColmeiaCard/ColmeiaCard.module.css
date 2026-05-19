@@ -1,86 +1,59 @@
 .card {
     background: var(--bg-card, #ffffff);
     border-radius: 16px;
-    padding: 20px;
-    border: 1px solid var(--border-color, #f0ede8);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+    padding: 24px;
+    border: 1px solid var(--border-color, #e8e4db);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
     position: relative;
-    overflow: hidden;
     display: flex;
     flex-direction: column;
     gap: 16px;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* Borda superior colorida */
-.card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 4px;
-}
-
-.card.saudavel::before { background: #22c55e; }
-.card.atencao::before  { background: #f97316; }
-.card.critico::before  { background: #ec4899; }
-.card.inativa::before  { background: #9ca3af; }
-
 .card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    box-shadow: 0 10px 25px rgba(251, 188, 5, 0.15);
 }
 
-/* Tag de Status */
-.statusRow {
-    display: flex;
-    justify-content: flex-start;
-}
-
-.badge {
-    font-size: 11px;
-    font-weight: 700;
-    padding: 4px 10px;
-    border-radius: 6px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.badge_saudavel { background: #f0fdf4; color: #16a34a; }
-.badge_atencao  { background: #fff7ed; color: #ea580c; }
-.badge_critico  { background: #fdf2f8; color: #be185d; }
-.badge_inativa  { background: #f9fafb; color: #6b7280; }
-
-/* Corpo Principal (Ícone e Nome) */
+/* Corpo Principal (Ícone Hexágono e Nome) */
 .corpo {
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 16px;
 }
 
+/* O verdadeiro formato de Hexágono agora fica no ícone! */
 .iconWrap {
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
-    background: #fffbeb;
+    width: 54px;
+    height: 54px;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    transition: background 0.3s;
 }
 
-/* Um truque para fazer o fundo parecer um hexágono: usar clip-path. Mas border-radius redondo fica mais clean */
+/* Cor do hexágono baseada na saúde */
+.card.saudavel .iconWrap { background: #22c55e; }
+.card.atencao .iconWrap  { background: #f97316; }
+.card.critico .iconWrap  { background: #ec4899; }
+.card.inativa .iconWrap  { background: #9ca3af; }
+
 .iconeColmeia {
     font-size: 24px;
-    color: #f59e0b;
+    color: #ffffff; /* Ícone branco dentro do hexágono colorido */
 }
 
 .info {
     display: flex;
     flex-direction: column;
+    flex: 1;
 }
 
 .nome {
-    font-size: 16px;
+    font-size: 17px;
     font-weight: 800;
     color: var(--text-primario);
     line-height: 1.2;
@@ -92,22 +65,44 @@
     margin-top: 2px;
 }
 
-/* Dados numéricos */
+/* Tag de Status alinhada à direita do cabeçalho */
+.badge {
+    font-size: 10px;
+    font-weight: 800;
+    padding: 4px 8px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    align-self: flex-start;
+}
+
+.badge_saudavel { background: #f0fdf4; color: #16a34a; }
+.badge_atencao  { background: #fff7ed; color: #ea580c; }
+.badge_critico  { background: #fdf2f8; color: #be185d; }
+.badge_inativa  { background: #f9fafb; color: #6b7280; }
+
+/* Dados numéricos (Campos) */
 .dadosWrap {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
+    margin-top: 4px;
 }
 
 .dadoItem {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background: #faf8f5; /* Fundo que contrasta bem dentro do card branco */
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid #f0ede8;
 }
 
 .dadoLabel {
     font-size: 13px;
     color: var(--text-secundario);
+    font-weight: 500;
 }
 
 .dadoValor {
@@ -128,8 +123,8 @@
     justify-content: space-between;
     align-items: center;
     margin-top: auto;
-    padding-top: 12px;
-    border-top: 1px solid var(--border-color);
+    padding-top: 16px;
+    border-top: 1px dashed var(--border-color);
 }
 
 .localizacao {
@@ -138,11 +133,12 @@
     gap: 6px;
     font-size: 12px;
     color: var(--text-secundario);
+    font-weight: 500;
 }
 
 .pinIcon {
     color: #f59e0b;
-    font-size: 13px;
+    font-size: 14px;
 }
 
 .acoes {
@@ -156,7 +152,7 @@
     padding: 6px;
     border-radius: 6px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 15px;
     transition: background 0.15s, color 0.15s;
     color: var(--text-secundario);
 }

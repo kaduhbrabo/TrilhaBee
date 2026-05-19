@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Navbar, Nav, Container, Offcanvas } from 'react-bootstrap';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import {
-    FaUserCircle, FaBell, FaForumbee, FaLayerGroup,
+    FaUserCircle, FaBell, FaLayerGroup,
     FaClipboardList, FaExclamationTriangle, FaBars,
     FaSignOutAlt, FaHome, FaUser, FaArchive, FaMapMarkerAlt,
     FaSun, FaCloud, FaCloudRain, FaSnowflake, FaTint
@@ -114,7 +114,7 @@ const Topbar = ({ children }) => {
         { to: '/colmeias', icon: <FaArchive />, label: 'Colmeias' },
         { to: '/inspecoes', icon: <FaClipboardList />, label: 'Inspeções' },
         { to: '/colheita', icon: <FaTint />, label: 'Colheita' },
-        { to: '/alertas', icon: <FaExclamationTriangle />, label: 'Alertas IA' },
+        { to: '/alertas', icon: <FaExclamationTriangle />, label: 'Recomendações' },
     ];
 
     return (
@@ -130,7 +130,7 @@ const Topbar = ({ children }) => {
                             <FaBars />
                         </button>
                         <Navbar.Brand as={Link} to="/inicio" className={styles.brand}>
-                            <FaForumbee className={styles.brandIcon} />
+                            <img src="/logo.png" alt="TrilhaBee Logo" style={{ height: '54px', marginRight: '14px', objectFit: 'contain' }} />
                             TrilhaBee
                         </Navbar.Brand>
                     </div>
@@ -148,7 +148,7 @@ const Topbar = ({ children }) => {
                         <div className={styles.sinoWrapper}>
                             <button
                                 className={styles.iconButton}
-                                title="Alertas"
+                                title="Recomendações de Manejo"
                                 onClick={() => navigate('/alertas')}
                             >
                                 <FaBell />
@@ -173,9 +173,9 @@ const Topbar = ({ children }) => {
                         onHide={fecharMenu}
                         className={styles.offcanvas}
                     >
-                        <Offcanvas.Header closeButton className={styles.offcanvasHeader}>
+                        <Offcanvas.Header closeButton closeVariant="white" className={styles.offcanvasHeader}>
                             <Offcanvas.Title className={styles.offcanvasTitle}>
-                                <FaForumbee /> TrilhaBee
+                                <img src="/logo.png" alt="TrilhaBee Logo" style={{ height: '48px', marginRight: '12px', objectFit: 'contain' }} /> TrilhaBee
                             </Offcanvas.Title>
                         </Offcanvas.Header>
                         <Offcanvas.Body className={styles.offcanvasBody}>

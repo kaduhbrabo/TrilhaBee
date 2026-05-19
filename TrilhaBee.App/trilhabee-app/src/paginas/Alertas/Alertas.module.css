@@ -128,6 +128,7 @@
 .card.alto  { border-left-color: #ef4444; }
 .card.medio { border-left-color: #f97316; }
 .card.baixo { border-left-color: #22c55e; }
+.card.sugestao { border-left-color: #8b5cf6; }
 
 .cardResolvido {
     opacity: 0.55;
@@ -163,6 +164,7 @@
 .nivelBadge.alto  { background: #fef2f2; color: #ef4444; animation: pulsarBorda 2.5s infinite; }
 .nivelBadge.medio { background: #fff7ed; color: #c2410c; }
 .nivelBadge.baixo { background: #f0fdf4; color: #16a34a; }
+.nivelBadge.sugestao { background: #f5f3ff; color: #7c3aed; }
 
 @keyframes pulsarBorda {
     0%, 100% { box-shadow: none; }

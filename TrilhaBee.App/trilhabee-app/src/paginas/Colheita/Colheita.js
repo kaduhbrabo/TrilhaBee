@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Spinner, Table } from 'react-bootstrap';
 import {
-    LineChart, Line, XAxis, YAxis, CartesianGrid,
+    XAxis, YAxis, CartesianGrid,
     Tooltip, ResponsiveContainer, AreaChart, Area,
     BarChart, Bar
 } from 'recharts';
-import { FaChartLine, FaTint, FaInfoCircle, FaBoxOpen } from 'react-icons/fa';
+import { FaChartLine, FaTint, FaBoxOpen } from 'react-icons/fa';
 import Topbar from '../../componentes/Topbar/Topbar';
 import { colmeiaAPI } from '../../services/colmeiaAPI';
 import { inspecaoAPI } from '../../services/inspecaoAPI';
@@ -117,7 +117,7 @@ const Colheita = () => {
                         </div>
                         <div className={styles.resumoInfo}>
                             <span className={styles.resumoLabel}>Estimativa Total</span>
-                            <strong className={styles.resumoValor}>~{totalEstimado} kg</strong>
+                            <strong className={styles.resumoValor}>{totalEstimado} kg</strong>
                             <span className={styles.resumoSub}>Próxima safra (12.5kg/melgueira)</span>
                         </div>
                     </div>
@@ -225,7 +225,7 @@ const Colheita = () => {
                                             <td><span className={styles.badgeEspecie}>{est.tipo}</span></td>
                                             <td className="text-center">{est.melgueiras}</td>
                                             <td className="text-end fw-bold" style={{ color: est.estimativaKg > 0 ? '#10b981' : '#8a8fa8' }}>
-                                                {est.estimativaKg > 0 ? `~${est.estimativaKg} kg` : '-'}
+                                                {est.estimativaKg > 0 ? `${est.estimativaKg} kg` : '-'}
                                             </td>
                                         </tr>
                                     ))}

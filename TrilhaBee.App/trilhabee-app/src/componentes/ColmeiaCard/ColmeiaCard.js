@@ -24,19 +24,17 @@ const ColmeiaCard = ({ identificacao, tipoAbelha, ativa, apiarioNome, condicao, 
 
     return (
         <div className={`${styles.card} ${styles[nivel]}`}>
-            {/* Tag flutuante de status */}
-            <div className={styles.statusRow}>
-                <span className={`${styles.badge} ${styles['badge_' + nivel]}`}>
-                    {labelSaude()}
-                </span>
-            </div>
-
             <div className={styles.corpo}>
                 <div className={styles.iconWrap}>
                     <FaForumbee className={styles.iconeColmeia} />
                 </div>
                 <div className={styles.info}>
-                    <strong className={styles.nome}>{identificacao}</strong>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                        <strong className={styles.nome}>{identificacao}</strong>
+                        <span className={`${styles.badge} ${styles['badge_' + nivel]}`}>
+                            {labelSaude()}
+                        </span>
+                    </div>
                     <span className={styles.tipo}>{tipoAbelha || 'Sem espécie definida'}</span>
                 </div>
             </div>
