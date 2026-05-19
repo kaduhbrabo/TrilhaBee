@@ -96,6 +96,7 @@ builder.Services.AddScoped<AlertaIAAplicacao>();
 
 // Injeção de Dependências - Servicos
 builder.Services.AddScoped<TrilhaBee.Servicos.Interfaces.IAlertaIAService, TrilhaBee.Servicos.AlertaIAService>();
+builder.Services.AddScoped<TrilhaBee.Servicos.Interfaces.IAiService, TrilhaBee.Servicos.AiService>();
 
 var app = builder.Build();
 
