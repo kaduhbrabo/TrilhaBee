@@ -149,7 +149,7 @@ const Inspecoes = () => {
         setModoEdicao(false);
         setFormData({
             colmeiaID: '',
-            dataInspecao: new Date().toISOString().split('T')[0],
+            dataInspecao: new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16),
             clima: '',
             temperamento: 'Calmas',
             forcaColmeia: 5,
@@ -164,30 +164,15 @@ const Inspecoes = () => {
         setMostrarModalForm(true);
     };
 
-    const extrairMel = (obs) => {
-        if (!obs) return { kg: '', data: '', textoLimpo: '' };
-        const match = obs.match(/\[Colheita: ([\d.]+)kg em ([\d/]+)\]/);
-        if (match) {
-            const textoLimpo = obs.replace(/\[Colheita:.*?\]\s*-\s*/, '').replace(/\[Colheita:.*?\]/, '').trim();
-            let dataFormatada = '';
-            const partesData = match[2].split('/');
-            if (partesData.length === 3) {
-                dataFormatada = `${partesData[2]}-${partesData[1]}-${partesData[0]}`;
-            }
-            return { kg: match[1], data: dataFormatada, textoLimpo };
-        }
-        return { kg: '', data: '', textoLimpo: obs };
-    };
+    // Removido o extrairMel, pois agora vem direto do banco de dados
 
     const abrirModalEditar = (inspecao) => {
         setModoEdicao(true);
         setInspecaoSelecionada(inspecao);
-        
-        const melExtraido = extrairMel(inspecao.observacoes);
 
         setFormData({
             colmeiaID: inspecao.colmeiaID,
-            dataInspecao: inspecao.dataInspecao.split('T')[0],
+            dataInspecao: inspecao.dataInspecao.slice(0, 16),
             clima: inspecao.clima,
             temperamento: inspecao.temperamento,
             forcaColmeia: inspecao.forcaColmeia,
@@ -195,9 +180,9 @@ const Inspecoes = () => {
             temRainha: inspecao.temRainha,
             temPostura: inspecao.temPostura,
             condicaoGeral: inspecao.condicaoGeral,
-            melColetadoKg: melExtraido.kg,
-            dataColheita: melExtraido.data,
-            observacoes: melExtraido.textoLimpo
+            melColetadoKg: inspecao.melColetado || '',
+            dataColheita: inspecao.dataColheita ? inspecao.dataColheita.split('T')[0] : '',
+            observacoes: inspecao.observacoes || ''
         });
         setMostrarModalForm(true);
     };
@@ -218,18 +203,13 @@ const Inspecoes = () => {
         setSalvando(true);
 
         try {
-            let obsFinal = formData.observacoes;
-            if (formData.melColetadoKg && formData.dataColheita) {
-                const melInfo = `[Colheita: ${formData.melColetadoKg}kg em ${new Date(formData.dataColheita).toLocaleDateString('pt-BR')}]`;
-                obsFinal = obsFinal ? `${melInfo} - ${obsFinal}` : melInfo;
-            }
-
             const payload = {
                 ...formData,
-                observacoes: obsFinal,
                 colmeiaID: parseInt(formData.colmeiaID),
                 forcaColmeia: parseInt(formData.forcaColmeia),
-                nivelAlimento: parseInt(formData.nivelAlimento)
+                nivelAlimento: parseInt(formData.nivelAlimento),
+                melColetado: formData.melColetadoKg ? parseFloat(formData.melColetadoKg) : null,
+                dataColheita: formData.dataColheita || null
             };
 
             if (modoEdicao) {
@@ -284,7 +264,7 @@ const Inspecoes = () => {
                             <tbody>
                                 {inspecoes.map(inspec => (
                                     <tr key={inspec.inspecaoID}>
-                                        <td style={{ fontWeight: 600 }}>{new Date(inspec.dataInspecao).toLocaleDateString('pt-BR')}</td>
+                                        <td style={{ fontWeight: 600 }}>{new Date(inspec.dataInspecao).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })}</td>
                                         <td style={{ fontWeight: 500 }}>{inspec.colmeiaNome || getNomeColmeia(inspec.colmeiaID)}</td>
                                         <td style={{ color: '#8a8fa8', fontSize: '12px' }}>{inspec.apiarioNome || '—'}</td>
                                         <td style={{ fontSize: '13px', color: '#4b5563' }}>{inspec.clima || '—'}</td>
@@ -304,7 +284,7 @@ const Inspecoes = () => {
                                                 : <FaTimes style={{ color: '#ef4444' }} />}
                                         </td>
                                         <td style={{ color: '#d97706', fontWeight: 600 }}>
-                                            {extrairMel(inspec.observacoes).kg ? `${extrairMel(inspec.observacoes).kg} kg` : <span style={{ color: '#d1cec7' }}>—</span>}
+                                            {inspec.melColetado ? `${inspec.melColetado} kg` : <span style={{ color: '#d1cec7' }}>—</span>}
                                         </td>
                                         <td className="text-center">
                                             <Button variant="light" size="sm" className="me-1 text-primary" onClick={() => abrirModalEditar(inspec)}><FaEdit /></Button>
@@ -334,8 +314,8 @@ const Inspecoes = () => {
                                 </Form.Select>
                             </Form.Group>
                             <Form.Group className="col-md-6 mb-3">
-                                <Form.Label>Data</Form.Label>
-                                <Form.Control type="date" name="dataInspecao" value={formData.dataInspecao} onChange={handleFormChange} required />
+                                <Form.Label>Data e Hora</Form.Label>
+                                <Form.Control type="datetime-local" name="dataInspecao" value={formData.dataInspecao} onChange={handleFormChange} required />
                             </Form.Group>
                         </div>
                         

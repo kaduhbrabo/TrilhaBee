@@ -4,7 +4,8 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import {
     FaUserCircle, FaBell, FaForumbee, FaLayerGroup,
     FaClipboardList, FaExclamationTriangle, FaBars,
-    FaSignOutAlt, FaHome, FaUser, FaArchive, FaMapMarkerAlt
+    FaSignOutAlt, FaHome, FaUser, FaArchive, FaMapMarkerAlt,
+    FaSun, FaCloud, FaCloudRain, FaSnowflake, FaTint
 } from 'react-icons/fa';
 import { alertaIaAPI } from '../../services/alertaIaAPI';
 import styles from './Topbar.module.css';
@@ -20,6 +21,16 @@ const Topbar = ({ children }) => {
 
     const usuarioNome = localStorage.getItem('usuarioNome') || 'Apicultor';
 
+    const getIconeClima = (mainInfo) => {
+        if (!mainInfo) return <FaMapMarkerAlt className={styles.climaIcon} />;
+        const mainLower = mainInfo.toLowerCase();
+        if (mainLower.includes('clear')) return <FaSun className={styles.climaIcon} style={{color: '#fbbc05'}} />;
+        if (mainLower.includes('cloud')) return <FaCloud className={styles.climaIcon} style={{color: '#8a8fa8'}} />;
+        if (mainLower.includes('rain') || mainLower.includes('drizzle')) return <FaCloudRain className={styles.climaIcon} style={{color: '#3b82f6'}} />;
+        if (mainLower.includes('snow')) return <FaSnowflake className={styles.climaIcon} style={{color: '#93c5fd'}} />;
+        return <FaSun className={styles.climaIcon} style={{color: '#fbbc05'}} />;
+    };
+
     useEffect(() => {
         // Busca quantidade de alertas pendentes para o sino
         alertaIaAPI.listarAsync()
@@ -31,12 +42,12 @@ const Topbar = ({ children }) => {
 
         // Lógica Global de Clima com Cache de 30 minutos
         const carregarClima = () => {
-            const cache = sessionStorage.getItem('climaGlobalData');
+            const cache = sessionStorage.getItem('climaGlobalDataObj');
             if (cache) {
-                const { clima, timestamp } = JSON.parse(cache);
+                const { dados, timestamp } = JSON.parse(cache);
                 const agora = new Date().getTime();
                 if (agora - timestamp < 30 * 60 * 1000) {
-                    setClimaGlobal(clima);
+                    setClimaGlobal(dados);
                     return; // Usa o cache válido
                 }
             }
@@ -51,12 +62,14 @@ const Topbar = ({ children }) => {
                     if(data.weather && data.weather.length > 0) {
                         const cidade = data.name;
                         const desc = data.weather[0].description;
+                        const mainWeather = data.weather[0].main;
                         const temp = Math.round(data.main.temp);
                         const stringClima = `${cidade} - ${desc.charAt(0).toUpperCase() + desc.slice(1)}, ${temp}°C`;
                         
-                        setClimaGlobal(stringClima);
-                        sessionStorage.setItem('climaGlobalData', JSON.stringify({
-                            clima: stringClima,
+                        const dadosClima = { texto: stringClima, tipo: mainWeather };
+                        setClimaGlobal(dadosClima);
+                        sessionStorage.setItem('climaGlobalDataObj', JSON.stringify({
+                            dados: dadosClima,
                             timestamp: new Date().getTime()
                         }));
                     }
@@ -69,11 +82,14 @@ const Topbar = ({ children }) => {
                     if(data.weather && data.weather.length > 0) {
                         const cidade = data.name;
                         const desc = data.weather[0].description;
+                        const mainWeather = data.weather[0].main;
                         const temp = Math.round(data.main.temp);
                         const stringClima = `${cidade} - ${desc.charAt(0).toUpperCase() + desc.slice(1)}, ${temp}°C`;
-                        setClimaGlobal(stringClima);
-                        sessionStorage.setItem('climaGlobalData', JSON.stringify({
-                            clima: stringClima,
+                        
+                        const dadosClima = { texto: stringClima, tipo: mainWeather };
+                        setClimaGlobal(dadosClima);
+                        sessionStorage.setItem('climaGlobalDataObj', JSON.stringify({
+                            dados: dadosClima,
                             timestamp: new Date().getTime()
                         }));
                     }
@@ -97,6 +113,7 @@ const Topbar = ({ children }) => {
         { to: '/apiarios', icon: <FaLayerGroup />, label: 'Apiários' },
         { to: '/colmeias', icon: <FaArchive />, label: 'Colmeias' },
         { to: '/inspecoes', icon: <FaClipboardList />, label: 'Inspeções' },
+        { to: '/colheita', icon: <FaTint />, label: 'Colheita' },
         { to: '/alertas', icon: <FaExclamationTriangle />, label: 'Alertas IA' },
     ];
 
@@ -122,8 +139,8 @@ const Topbar = ({ children }) => {
                         {/* Clima Widget */}
                         {climaGlobal && (
                             <div className={styles.climaWidget} title="Clima Atual">
-                                <FaMapMarkerAlt className={styles.climaIcon} />
-                                <span className={styles.climaTexto}>{climaGlobal}</span>
+                                {getIconeClima(climaGlobal.tipo)}
+                                <span className={styles.climaTexto}>{climaGlobal.texto}</span>
                             </div>
                         )}
 
@@ -139,10 +156,10 @@ const Topbar = ({ children }) => {
                             {alertasPendentes > 0 && <span className={styles.badgeSino} />}
                         </div>
 
-                        <div className={styles.perfil}>
+                        <div className={styles.perfil} onClick={() => navigate('/perfil')} style={{ cursor: 'pointer' }} title="Ir para perfil">
                             <FaUserCircle className={styles.perfilIcon} />
                             <span className={styles.perfilNome}>{usuarioNome}</span>
-                            <button className={styles.btnSair} onClick={handleLogout} title="Sair">
+                            <button className={styles.btnSair} onClick={(e) => { e.stopPropagation(); handleLogout(); }} title="Sair">
                                 <FaSignOutAlt />
                             </button>
                         </div>

@@ -6,16 +6,16 @@
 
 /* ── TOPBAR ─────────────────────────────── */
 .navbar {
-    background-color: #ffffff !important;
+    background-color: var(--bg-card) !important;
     height: 60px;
     box-shadow: 0 1px 0 rgba(0,0,0,0.06);
     z-index: 1030;
-    border-bottom: 1px solid #f0ede8;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .menuToggle {
     border: none !important;
-    color: #3d3d3d !important;
+    color: var(--text-primario) !important;
     font-size: 20px;
     padding: 4px 10px;
     margin-right: 12px;
@@ -32,7 +32,7 @@
     align-items: center;
     font-size: 17px;
     font-weight: 800;
-    color: #1a1a2e !important;
+    color: var(--text-primario) !important;
     letter-spacing: -0.3px;
     text-decoration: none;
 }
@@ -59,7 +59,7 @@
     background: none;
     border: none;
     font-size: 18px;
-    color: #8a8fa8;
+    color: var(--text-secundario);
     cursor: pointer;
     padding: 6px;
     border-radius: 8px;
@@ -69,7 +69,7 @@
 }
 
 .iconButton:hover {
-    background: #f5f3ee;
+    background: var(--bg-pagina);
     color: #fbbc05;
 }
 
@@ -104,10 +104,10 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    background: #fdfaf3;
+    background: var(--bg-pagina);
     padding: 6px 12px;
     border-radius: 8px;
-    border: 1px solid #f2e8cf;
+    border: 1px solid var(--border-color);
     margin-right: 12px;
 }
 
@@ -119,11 +119,11 @@
 .climaTexto {
     font-size: 12px;
     font-weight: 600;
-    color: #4b5563;
+    color: var(--text-secundario);
 }
 
 .perfil:hover {
-    background: #f5f3ee;
+    background: var(--bg-pagina);
 }
 
 .perfilIcon {
@@ -133,7 +133,7 @@
 
 .perfilNome {
     font-weight: 600;
-    color: #1a1a2e;
+    color: var(--text-primario);
     font-size: 13px;
 }
 

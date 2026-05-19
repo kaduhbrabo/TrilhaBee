@@ -6,10 +6,10 @@ import {
 } from 'recharts';
 import {
     FaForumbee, FaCheckCircle, FaExclamationTriangle,
-    FaClipboardCheck, FaMapMarkerAlt, FaChevronRight,
+    FaClipboardCheck, FaChevronRight,
     FaArrowRight, FaLayerGroup, FaMagic, FaChartLine
 } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Topbar from '../../componentes/Topbar/Topbar';
 import { colmeiaAPI } from '../../services/colmeiaAPI';
 import { alertaIaAPI } from '../../services/alertaIaAPI';
@@ -26,7 +26,6 @@ const agruparPorMes = (inspecoes) => {
         const mes = meses[new Date(i.dataInspecao).getMonth()];
         contagem[mes] = (contagem[mes] || 0) + 1;
     });
-    // Retorna os últimos 6 meses com dados
     return meses
         .map(m => ({ mes: m, inspeções: contagem[m] || 0 }))
         .filter(item => item.inspeções > 0)
@@ -35,6 +34,7 @@ const agruparPorMes = (inspecoes) => {
 
 const Inicio = () => {
     const usuarioNome = localStorage.getItem('usuarioNome') || 'Apicultor';
+    const navigate = useNavigate();
     const [carregando, setCarregando] = useState(true);
     const [stats, setStats] = useState({
         totalColmeias: 0,
@@ -72,11 +72,8 @@ const Inicio = () => {
                     totalApiarios: apiarios.length,
                 });
 
-                setAlertasRecentes(
-                    alertas.filter(a => !a.resolvido).slice(0, 5)
-                );
+                setAlertasRecentes(alertas.filter(a => !a.resolvido).slice(0, 5));
 
-                // Calcula estimativa de safra
                 const totalEstimativa = colmeias
                     .filter(c => c.ativa && c.quantidadeMelgueiras > 0)
                     .reduce((acc, c) => acc + (c.quantidadeMelgueiras * 12.5), 0);
@@ -93,56 +90,33 @@ const Inicio = () => {
     }, []);
 
     const statCards = [
-        {
-            label: 'Total de Colmeias',
-            valor: stats.totalColmeias,
-            sub: `${stats.totalApiarios} apiários gerenciados`,
-            icon: <FaForumbee />,
-            cor: 'laranja',
-        },
-        {
-            label: 'Colmeias Ativas',
-            valor: stats.colmeiasAtivas,
-            sub: `${stats.totalColmeias - stats.colmeiasAtivas} inativas`,
-            icon: <FaCheckCircle />,
-            cor: 'verde',
-        },
-        {
-            label: 'Alertas Pendentes',
-            valor: stats.alertasPendentes,
-            sub: 'Requerem atenção',
-            icon: <FaExclamationTriangle />,
-            cor: stats.alertasPendentes > 0 ? 'rosa' : 'verde',
-        },
-        {
-            label: 'Inspeções este Mês',
-            valor: stats.inspecoesMes,
-            sub: 'Registros do mês atual',
-            icon: <FaClipboardCheck />,
-            cor: 'amarelo',
-        },
-        {
-            label: 'Previsão Safra',
-            valor: `~${estimativaSafra}kg`,
-            sub: 'Estimativa de produção',
-            icon: <FaChartLine />,
-            cor: 'roxo',
-        },
+        { label: 'Total de Colmeias',  valor: stats.totalColmeias,    sub: `${stats.totalApiarios} apiários gerenciados`,            icon: <FaForumbee />,          cor: 'laranja', rota: '/colmeias'  },
+        { label: 'Colmeias Ativas',    valor: stats.colmeiasAtivas,   sub: `${stats.totalColmeias - stats.colmeiasAtivas} inativas`,  icon: <FaCheckCircle />,       cor: 'verde',   rota: '/colmeias'  },
+        { label: 'Alertas Pendentes',  valor: stats.alertasPendentes, sub: 'Requerem atenção',                                        icon: <FaExclamationTriangle />,cor: stats.alertasPendentes > 0 ? 'rosa' : 'verde', rota: '/alertas' },
+        { label: 'Inspeções este Mês', valor: stats.inspecoesMes,     sub: 'Registros do mês atual',                                  icon: <FaClipboardCheck />,    cor: 'amarelo', rota: '/inspecoes' },
+        { label: 'Previsão Safra',     valor: `~${estimativaSafra}kg`,sub: 'Estimativa de produção',                                  icon: <FaChartLine />,         cor: 'roxo',    rota: '/colheita'  },
     ];
 
     const gerarAnaliseIA = async () => {
         setGerandoIA(true);
         try {
             await alertaIaAPI.gerarAnaliseAsync();
-            const alertas = await alertaIaAPI.listarAsync().catch(() => []);
-            setAlertasRecentes(alertas.filter(a => !a.resolvido).slice(0, 5));
-            setStats(prev => ({ ...prev, alertasPendentes: alertas.filter(a => !a.resolvido).length }));
+            const alertasAtualizados = await alertaIaAPI.listarAsync().catch(() => []);
+            setAlertasRecentes(alertasAtualizados.filter(a => !a.resolvido).slice(0, 5));
+            setStats(prev => ({ ...prev, alertasPendentes: alertasAtualizados.filter(a => !a.resolvido).length }));
         } catch(e) {
-            alert('Erro ao gerar análise.');
+            console.error('Erro ao gerar análise automática da IA:', e);
         } finally {
             setGerandoIA(false);
         }
     };
+
+    // Dispara a IA automaticamente após carregar os dados
+    useEffect(() => {
+        if (!carregando) {
+            gerarAnaliseIA();
+        }
+    }, [carregando]);
 
     const nivelCor = (nivel) => {
         if (nivel === 'Alta') return styles.nivelAlto;
@@ -167,25 +141,27 @@ const Inicio = () => {
             <div className={styles.pagina}>
                 {/* Saudação */}
                 <div className={styles.saudacao}>
-                    <div>
-                        <h1 className={styles.titulo}>Olá, {usuarioNome}!</h1>
-                        <p className={styles.subtitulo}>Vamos cuidar do seu apiário hoje</p>
-                    </div>
+                    <h1 className={styles.titulo}>Olá, {usuarioNome}!</h1>
+                    <p className={styles.subtitulo}>Vamos cuidar do seu apiário hoje</p>
                 </div>
 
-                {/* Cards de Estatísticas */}
+                {/* Cards de Estatísticas — agora funcionam como Acesso Rápido */}
                 <div className={styles.statsGrid}>
                     {statCards.map((card) => (
-                        <div key={card.label} className={`${styles.statCard} ${styles[card.cor]}`}>
-                            <div className={styles.statIconWrap}>
-                                {card.icon}
-                            </div>
+                        <button
+                            key={card.label}
+                            className={`${styles.statCard} ${styles[card.cor]}`}
+                            onClick={() => navigate(card.rota)}
+                            title={`Ir para ${card.label}`}
+                        >
+                            <div className={styles.statIconWrap}>{card.icon}</div>
                             <div className={styles.statInfo}>
                                 <span className={styles.statLabel}>{card.label}</span>
                                 <strong className={styles.statValor}>{card.valor}</strong>
                                 <span className={styles.statSub}>{card.sub}</span>
                             </div>
-                        </div>
+                            <FaChevronRight className={styles.statSeta} />
+                        </button>
                     ))}
                 </div>
 
@@ -215,32 +191,13 @@ const Inicio = () => {
                                 <ResponsiveContainer width="100%" height={220}>
                                     <BarChart data={dadosGrafico} barSize={36}>
                                         <CartesianGrid strokeDasharray="3 3" stroke="#f0ede8" vertical={false} />
-                                        <XAxis
-                                            dataKey="mes"
-                                            tick={{ fill: '#8a8fa8', fontSize: 12 }}
-                                            axisLine={false}
-                                            tickLine={false}
-                                        />
-                                        <YAxis
-                                            allowDecimals={false}
-                                            tick={{ fill: '#8a8fa8', fontSize: 12 }}
-                                            axisLine={false}
-                                            tickLine={false}
-                                        />
+                                        <XAxis dataKey="mes" tick={{ fill: '#8a8fa8', fontSize: 12 }} axisLine={false} tickLine={false} />
+                                        <YAxis allowDecimals={false} tick={{ fill: '#8a8fa8', fontSize: 12 }} axisLine={false} tickLine={false} />
                                         <Tooltip
                                             cursor={{ fill: 'rgba(251,188,5,0.06)' }}
-                                            contentStyle={{
-                                                border: '1px solid #f0ede8',
-                                                borderRadius: '10px',
-                                                fontSize: '13px',
-                                                boxShadow: '0 4px 16px rgba(0,0,0,0.06)'
-                                            }}
+                                            contentStyle={{ border: '1px solid #f0ede8', borderRadius: '10px', fontSize: '13px', boxShadow: '0 4px 16px rgba(0,0,0,0.06)' }}
                                         />
-                                        <Bar
-                                            dataKey="inspeções"
-                                            fill="#fbbc05"
-                                            radius={[6, 6, 0, 0]}
-                                        />
+                                        <Bar dataKey="inspeções" fill="#fbbc05" radius={[6, 6, 0, 0]} />
                                     </BarChart>
                                 </ResponsiveContainer>
                             )}
@@ -255,14 +212,7 @@ const Inicio = () => {
                                 <p className={styles.cardSub}>Análise inteligente das suas colmeias</p>
                             </div>
                             <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                                <button
-                                    className={styles.btnGerarIA}
-                                    onClick={gerarAnaliseIA}
-                                    disabled={gerandoIA}
-                                    title="Gerar nova análise IA"
-                                >
-                                    <FaMagic /> {gerandoIA ? 'Analisando...' : 'Analisar'}
-                                </button>
+                                {gerandoIA && <span style={{ fontSize: '12px', color: '#8a8fa8' }}><Spinner size="sm" animation="border" style={{ marginRight: '5px' }}/> Analisando...</span>}
                                 <Link to="/alertas" className={styles.cardLink}>
                                     Ver todos <FaArrowRight />
                                 </Link>
@@ -296,28 +246,6 @@ const Inicio = () => {
                                 ))}
                             </div>
                         )}
-                    </div>
-                </div>
-
-                {/* Links Rápidos */}
-                <div className={styles.acessoRapido}>
-                    <h3 className={styles.acessoTitulo}>Acesso Rápido</h3>
-                    <div className={styles.acessoGrid}>
-                        {[
-                            { to: '/apiarios', icon: <FaLayerGroup />, label: 'Apiários', sub: 'Gerenciar locais' },
-                            { to: '/colmeias', icon: <FaForumbee />, label: 'Colmeias', sub: 'Ver todas as colmeias' },
-                            { to: '/inspecoes', icon: <FaClipboardCheck />, label: 'Inspeções', sub: 'Registrar visita' },
-                            { to: '/alertas', icon: <FaExclamationTriangle />, label: 'Alertas IA', sub: 'Ver recomendações' },
-                        ].map(item => (
-                            <Link key={item.to} to={item.to} className={styles.acessoCard}>
-                                <span className={styles.acessoIcone}>{item.icon}</span>
-                                <div>
-                                    <strong>{item.label}</strong>
-                                    <span>{item.sub}</span>
-                                </div>
-                                <FaChevronRight className={styles.acessoSeta} />
-                            </Link>
-                        ))}
                     </div>
                 </div>
             </div>

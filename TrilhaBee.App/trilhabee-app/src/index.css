@@ -6,26 +6,39 @@
   padding: 0;
 }
 
+/* ── Variáveis padrão (tema Creme) ─────── */
+:root {
+  --bg-pagina:       #fefaf6;
+  --bg-card:         #ffffff;
+  --bg-sidebar:      #1a1a2e;
+  --bg-topbar:       #1a1a2e;
+  --text-primario:   #1a1a2e;
+  --text-secundario: #8a8fa8;
+  --border-color:    #f0ede8;
+  --stripe-a:        rgba(251,188,5,0.06);
+  --stripe-b:        rgba(0,0,0,0.04);
+}
+
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-size: 14px;
-  color: #1a1a2e;
+  color: var(--text-primario);
 
-  /* Fundo com faixas diagonais preto e amarelo (estilo abelha autêntico) */
-  background-color: #fefaf6;
+  background-color: var(--bg-pagina);
   background-image: repeating-linear-gradient(
     -45deg,
-    rgba(251, 188, 5, 0.06), /* Amarelo */
-    rgba(251, 188, 5, 0.06) 15px,
-    rgba(0, 0, 0, 0.06) 15px, /* Preto */
-    rgba(0, 0, 0, 0.06) 30px
+    var(--stripe-a),
+    var(--stripe-a) 15px,
+    var(--stripe-b) 15px,
+    var(--stripe-b) 30px
   );
   min-height: 100vh;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Utilitários globais */
+/* ── Utilitários globais ─────────────── */
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Inter', sans-serif;
   font-weight: 700;
@@ -35,7 +48,7 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
-/* Scrollbar customizada */
+/* ── Scrollbar customizada ──────────── */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;

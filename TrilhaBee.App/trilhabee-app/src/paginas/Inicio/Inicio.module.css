@@ -1,5 +1,7 @@
 .pagina {
     max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
 }
 
 .loadingWrap {
@@ -61,11 +63,19 @@
     position: relative;
     overflow: hidden;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+    border: none;
+    text-align: left;
+    width: 100%;
 }
 
 .statCard:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 28px rgba(0,0,0,0.16);
+}
+
+.statCard:active {
+    transform: translateY(-1px);
 }
 
 .statCard::after {
@@ -77,6 +87,14 @@
     height: 80px;
     border-radius: 50%;
     background: rgba(255,255,255,0.12);
+}
+
+.statSeta {
+    position: absolute;
+    right: 14px;
+    bottom: 14px;
+    font-size: 10px;
+    opacity: 0.6;
 }
 
 /* Paleta dos Cards */
@@ -321,80 +339,3 @@
     cursor: wait;
 }
 
-/* ── ACESSO RÁPIDO ──────────────────────── */
-.acessoRapido {
-    margin-top: 4px;
-}
-
-.acessoTitulo {
-    font-size: 14px;
-    font-weight: 700;
-    color: #1a1a2e;
-    margin-bottom: 12px;
-}
-
-.acessoGrid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-}
-
-@media (max-width: 900px) {
-    .acessoGrid { grid-template-columns: repeat(2, 1fr); }
-}
-
-.acessoCard {
-    background: #ffffff;
-    border: 1px solid #f0ede8;
-    border-radius: 12px;
-    padding: 14px 16px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    text-decoration: none;
-    color: #1a1a2e;
-    transition: all 0.15s ease;
-}
-
-.acessoCard:hover {
-    border-color: #fbbc05;
-    box-shadow: 0 4px 16px rgba(251,188,5,0.1);
-    transform: translateY(-1px);
-    color: #1a1a2e;
-}
-
-.acessoIcone {
-    width: 36px;
-    height: 36px;
-    background: #fffbeb;
-    border-radius: 9px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-    color: #fbbc05;
-    flex-shrink: 0;
-}
-
-.acessoCard div {
-    flex: 1;
-}
-
-.acessoCard div strong {
-    display: block;
-    font-size: 13px;
-    font-weight: 600;
-}
-
-.acessoCard div span {
-    display: block;
-    font-size: 11px;
-    color: #8a8fa8;
-    margin-top: 1px;
-}
-
-.acessoSeta {
-    font-size: 11px;
-    color: #d1cec7;
-    flex-shrink: 0;
-}

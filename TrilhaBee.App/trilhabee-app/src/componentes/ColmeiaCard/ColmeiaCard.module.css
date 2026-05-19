@@ -1,21 +1,23 @@
-/* Card base */
 .card {
-    background: #ffffff;
-    border-radius: 14px;
-    padding: 18px;
-    border: 1px solid #f0ede8;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s;
+    background: var(--bg-card, #ffffff);
+    border-radius: 16px;
+    padding: 20px;
+    border: 1px solid var(--border-color, #f0ede8);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.02);
     position: relative;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* Borda superior colorida por status */
+/* Borda superior colorida */
 .card::before {
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0;
-    height: 3px;
+    height: 4px;
 }
 
 .card.saudavel::before { background: #22c55e; }
@@ -24,26 +26,41 @@
 .card.inativa::before  { background: #9ca3af; }
 
 .card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.07);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
 }
 
-.card.saudavel:hover { border-color: rgba(34,197,94,0.25); }
-.card.atencao:hover  { border-color: rgba(249,115,22,0.25); }
-.card.critico:hover  { border-color: rgba(236,72,153,0.25); }
+/* Tag de Status */
+.statusRow {
+    display: flex;
+    justify-content: flex-start;
+}
 
-/* Cabeçalho do card */
-.cardTop {
+.badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.badge_saudavel { background: #f0fdf4; color: #16a34a; }
+.badge_atencao  { background: #fff7ed; color: #ea580c; }
+.badge_critico  { background: #fdf2f8; color: #be185d; }
+.badge_inativa  { background: #f9fafb; color: #6b7280; }
+
+/* Corpo Principal (Ícone e Nome) */
+.corpo {
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 12px;
+    gap: 14px;
 }
 
 .iconWrap {
-    width: 42px;
-    height: 42px;
-    border-radius: 10px;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
     background: #fffbeb;
     display: flex;
     align-items: center;
@@ -51,120 +68,105 @@
     flex-shrink: 0;
 }
 
+/* Um truque para fazer o fundo parecer um hexágono: usar clip-path. Mas border-radius redondo fica mais clean */
 .iconeColmeia {
-    font-size: 20px;
-    color: #fbbc05;
+    font-size: 24px;
+    color: #f59e0b;
 }
 
 .info {
     display: flex;
     flex-direction: column;
-    gap: 2px;
 }
 
 .nome {
-    font-size: 14px;
-    font-weight: 700;
-    color: #1a1a2e;
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--text-primario);
+    line-height: 1.2;
 }
 
 .tipo {
-    font-size: 12px;
-    color: #8a8fa8;
+    font-size: 13px;
+    color: var(--text-secundario);
+    margin-top: 2px;
 }
 
-/* Badge de status */
-.statusWrap {
-    margin-bottom: 10px;
+/* Dados numéricos */
+.dadosWrap {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
-.badge {
-    font-size: 10px;
+.dadoItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dadoLabel {
+    font-size: 13px;
+    color: var(--text-secundario);
+}
+
+.dadoValor {
+    font-size: 14px;
     font-weight: 700;
-    letter-spacing: 0.4px;
-    text-transform: uppercase;
-    padding: 3px 9px;
-    border-radius: 20px;
+    color: var(--text-primario);
 }
 
-.badge_saudavel { background: #f0fdf4; color: #16a34a; }
-.badge_atencao  { background: #fff7ed; color: #c2410c; }
-.badge_critico  { background: #fdf2f8; color: #be185d; }
-.badge_inativa  { background: #f9fafb; color: #6b7280; }
+.dadoValorHighlight {
+    font-size: 14px;
+    font-weight: 800;
+    color: #d97706; /* Laranja forte */
+}
 
-/* Localização */
+/* Rodapé (Localização + Botões) */
+.rodape {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 1px solid var(--border-color);
+}
+
 .localizacao {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 6px;
     font-size: 12px;
-    color: #8a8fa8;
-    margin-bottom: 14px;
+    color: var(--text-secundario);
 }
 
 .pinIcon {
-    font-size: 11px;
-    color: #fbbc05;
-    flex-shrink: 0;
+    color: #f59e0b;
+    font-size: 13px;
 }
 
-/* Estrutura física (quadros e melgueiras) */
-.estrutura {
-    display: flex;
-    gap: 16px;
-    margin-bottom: 14px;
-    padding: 8px 10px;
-    background: #fafaf8;
-    border-radius: 8px;
-    border: 1px solid #f0ede8;
-}
-
-.estruturaItem {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 11px;
-    color: #4b5563;
-    font-weight: 500;
-}
-
-.estruturaIcon {
-    font-size: 12px;
-    color: #d97706;
-}
-
-/* Ações */
 .acoes {
     display: flex;
     gap: 8px;
-    justify-content: flex-end;
-    border-top: 1px solid #f5f3ee;
-    padding-top: 12px;
-    margin-top: 4px;
 }
 
 .btnEditar, .btnExcluir {
     background: none;
     border: none;
-    padding: 6px 10px;
-    border-radius: 7px;
+    padding: 6px;
+    border-radius: 6px;
     cursor: pointer;
-    font-size: 13px;
+    font-size: 14px;
     transition: background 0.15s, color 0.15s;
-}
-
-.btnEditar {
-    color: #6366f1;
+    color: var(--text-secundario);
 }
 
 .btnEditar:hover {
-    background: #eef2ff;
-}
-
-.btnExcluir {
-    color: #ef4444;
+    color: #4f46e5;
+    background: #e0e7ff;
 }
 
 .btnExcluir:hover {
-    background: #fef2f2;
+    color: #ef4444;
+    background: #fee2e2;
 }
