@@ -8,16 +8,16 @@ namespace TrilhaBee.Aplicacao
     public class InspecaoAplicacao
     {
         readonly IInspecaoRepositorio _inspecaoRepositorio;
-        readonly TrilhaBee.Servicos.Interfaces.IAlertaIAService _alertaIAService;
+        readonly Microsoft.Extensions.DependencyInjection.IServiceScopeFactory _serviceScopeFactory;
         readonly IAlertaIARepositorio _alertaIARepositorio;
 
         public InspecaoAplicacao(
             IInspecaoRepositorio inspecaoRepositorio,
-            TrilhaBee.Servicos.Interfaces.IAlertaIAService alertaIAService,
+            Microsoft.Extensions.DependencyInjection.IServiceScopeFactory serviceScopeFactory,
             IAlertaIARepositorio alertaIARepositorio)
         {
             _inspecaoRepositorio = inspecaoRepositorio;
-            _alertaIAService = alertaIAService;
+            _serviceScopeFactory = serviceScopeFactory;
             _alertaIARepositorio = alertaIARepositorio;
         }
 
@@ -29,25 +29,15 @@ namespace TrilhaBee.Aplicacao
             }
             _inspecaoRepositorio.Adicionar(inspecao);
 
-            // Integração com IA
-            var mensagemAlerta = _alertaIAService.AnalisarInspecao(
-                inspecao.ForcaColmeia, 
-                inspecao.NivelAlimento, 
-                inspecao.TemRainha, 
-                inspecao.TemPostura);
-
-            if (!string.IsNullOrEmpty(mensagemAlerta))
+            // Dispara análise da IA em background para não travar a UI
+            System.Threading.Tasks.Task.Run(async () => 
             {
-                var alerta = new AlertaIA
+                using (var scope = _serviceScopeFactory.CreateScope())
                 {
-                    Mensagem = mensagemAlerta,
-                    DataGeracao = DateTime.Now,
-                    NivelGravidade = "Atenção",
-                    Resolvido = false,
-                    ColmeiaID = inspecao.ColmeiaID
-                };
-                _alertaIARepositorio.Adicionar(alerta);
-            }
+                    var iaApp = Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<AlertaIAAplicacao>(scope.ServiceProvider);
+                    await iaApp.GerarAnaliseInteligenteAsync();
+                }
+            });
         }
 
         public void Atualizar(Inspecao inspecao)
@@ -67,6 +57,16 @@ namespace TrilhaBee.Aplicacao
             existente.DataColheita = inspecao.DataColheita;
 
             _inspecaoRepositorio.Atualizar(existente);
+
+            // Dispara análise da IA em background para atualizar o parecer
+            System.Threading.Tasks.Task.Run(async () => 
+            {
+                using (var scope = _serviceScopeFactory.CreateScope())
+                {
+                    var iaApp = Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<AlertaIAAplicacao>(scope.ServiceProvider);
+                    await iaApp.GerarAnaliseInteligenteAsync();
+                }
+            });
         }
 
         public void Excluir(int id)

@@ -29,12 +29,8 @@ namespace TrilhaBee.Aplicacao
 
         public async Task GerarAnaliseInteligenteAsync()
         {
-            // Limpa alertas não resolvidos para não duplicar
+            // Carrega os pareceres existentes para evitar duplicação
             var existentes = _alertaIARepositorio.ObterTodos().ToList();
-            foreach(var alerta in existentes)
-            {
-                if(!alerta.Resolvido) _alertaIARepositorio.Excluir(alerta.AlertaIAID);
-            }
 
             var colmeias = _colmeiaRepositorio.ObterTodos();
             var inspecoes = _inspecaoRepositorio.ObterTodos();
@@ -72,17 +68,20 @@ namespace TrilhaBee.Aplicacao
 
             // Aqui vamos construir o prompt pedindo o formato JSON especificamente
             var prompt = $@"
-Você é um especialista em apicultura avançada e atua como uma IA assistente do sistema TrilhaBee.
-Sua tarefa é analisar o cenário atual das colmeias e retornar um array JSON de alertas ou sugestões de manejo.
+Você é um Especialista em Zootecnia e Apicultura Avançada. 
+Sua função é fornecer um Relatório Técnico de Manejo para auxiliar o apicultor na tomada de decisões.
 
 Contexto atual das colmeias:
 {contextoBuilder.ToString()}
 
-Regras:
-1. Analise o clima, a quantidade de quadros, melgueiras, nível de alimento e histórico.
-2. Identifique potenciais problemas (fome, enxameação, falta de espaço, doenças).
-3. Você DEVE retornar EXATAMENTE um array JSON puro onde cada objeto tem duas propriedades: 'Mensagem' (string explicativa) e 'NivelGravidade' (string: 'Baixa', 'Media', 'Alta' ou 'Sugestão').
-4. Não retorne nenhum outro texto além do JSON, sem blocos de markdown.
+Regras para sua resposta:
+1. Analise as condições climáticas informadas, força da colmeia, disponibilidade de alimento e espaço físico (quadros/melgueiras).
+2. Forneça análises zootécnicas precisas (ex: risco de enxameação por superlotação, necessidade de alimentação suplementar, inserção de cera alveolada, etc).
+3. Seja conciso e evite repetir problemas que não mudaram de status.
+4. Você DEVE obrigatoriamente incluir um **prazo estimado ou data limite** na sua recomendação para que o apicultor possa se programar (ex: 'Prazo: nos próximos 5 dias').
+5. NUNCA cite os números brutos na sua resposta (ex: não diga 'Força 9' ou 'Alimento 2'), fale apenas de forma fluida (ex: 'A colmeia está muito forte' ou 'A colmeia está sem reservas de mel').
+6. Você DEVE retornar EXATAMENTE um array JSON puro onde cada objeto tem duas propriedades: 'Mensagem' (string com a análise, recomendação técnica e o prazo) e 'NivelGravidade' (string: 'Baixa', 'Media', 'Alta' ou 'Parecer').
+7. Não retorne nenhum outro texto além do JSON, sem formatação markdown.
 ";
 
             try
