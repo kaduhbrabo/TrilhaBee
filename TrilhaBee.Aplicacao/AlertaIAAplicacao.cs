@@ -78,9 +78,9 @@ Regras para sua resposta:
 1. Analise as condições climáticas informadas, força da colmeia, disponibilidade de alimento e espaço físico (quadros/melgueiras).
 2. Forneça análises zootécnicas precisas (ex: risco de enxameação por superlotação, necessidade de alimentação suplementar, inserção de cera alveolada, etc).
 3. Seja conciso e evite repetir problemas que não mudaram de status.
-4. Você DEVE obrigatoriamente incluir um **prazo estimado ou data limite** na sua recomendação para que o apicultor possa se programar (ex: 'Prazo: nos próximos 5 dias').
+4. A sua recomendação deve ser fluida, técnica e natural. Se houver alguma urgência, integre ao texto suavemente sem criar campos como 'Prazo:' ou 'Data limite:'.
 5. NUNCA cite os números brutos na sua resposta (ex: não diga 'Força 9' ou 'Alimento 2'), fale apenas de forma fluida (ex: 'A colmeia está muito forte' ou 'A colmeia está sem reservas de mel').
-6. Você DEVE retornar EXATAMENTE um array JSON puro onde cada objeto tem duas propriedades: 'Mensagem' (string com a análise, recomendação técnica e o prazo) e 'NivelGravidade' (string: 'Baixa', 'Media', 'Alta' ou 'Parecer').
+6. Você DEVE retornar EXATAMENTE um array JSON puro onde cada objeto tem duas propriedades: 'Mensagem' (string com a análise e recomendação técnica) e 'NivelGravidade' (string: 'Baixa', 'Media', 'Alta' ou 'Parecer').
 7. Não retorne nenhum outro texto além do JSON, sem formatação markdown.
 ";
 
