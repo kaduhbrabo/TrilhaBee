@@ -63,6 +63,8 @@ namespace TrilhaBee.Aplicacao
             existente.NivelAlimento = inspecao.NivelAlimento;
             existente.Clima = inspecao.Clima;
             existente.Temperamento = inspecao.Temperamento;
+            existente.MelColetado = inspecao.MelColetado;
+            existente.DataColheita = inspecao.DataColheita;
 
             _inspecaoRepositorio.Atualizar(existente);
         }

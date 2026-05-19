@@ -4,6 +4,11 @@ using TrilhaBee.Dominio.Entidades;
 using TrilhaBee.Repositorio.Interfaces;
 
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using TrilhaBee.Servicos.Interfaces;
+using System.Text.Json;
+using System.Collections.Generic;
 
 namespace TrilhaBee.Aplicacao
 {
@@ -12,18 +17,20 @@ namespace TrilhaBee.Aplicacao
         readonly IAlertaIARepositorio _alertaIARepositorio;
         readonly IColmeiaRepositorio _colmeiaRepositorio;
         readonly IInspecaoRepositorio _inspecaoRepositorio;
+        readonly IAiService _aiService;
 
-        public AlertaIAAplicacao(IAlertaIARepositorio alertaIARepositorio, IColmeiaRepositorio colmeiaRepositorio, IInspecaoRepositorio inspecaoRepositorio)
+        public AlertaIAAplicacao(IAlertaIARepositorio alertaIARepositorio, IColmeiaRepositorio colmeiaRepositorio, IInspecaoRepositorio inspecaoRepositorio, IAiService aiService)
         {
             _alertaIARepositorio = alertaIARepositorio;
             _colmeiaRepositorio = colmeiaRepositorio;
             _inspecaoRepositorio = inspecaoRepositorio;
+            _aiService = aiService;
         }
 
-        public void GerarAnaliseInteligente()
+        public async Task GerarAnaliseInteligenteAsync()
         {
-            // Limpa alertas não resolvidos para não duplicar (Refaz a análise atual)
-            var existentes = _alertaIARepositorio.ObterTodos();
+            // Limpa alertas não resolvidos para não duplicar
+            var existentes = _alertaIARepositorio.ObterTodos().ToList();
             foreach(var alerta in existentes)
             {
                 if(!alerta.Resolvido) _alertaIARepositorio.Excluir(alerta.AlertaIAID);
@@ -32,10 +39,14 @@ namespace TrilhaBee.Aplicacao
             var colmeias = _colmeiaRepositorio.ObterTodos();
             var inspecoes = _inspecaoRepositorio.ObterTodos();
 
-            foreach(var colmeia in colmeias)
-            {
-                if (!colmeia.Ativa) continue;
+            var contextoBuilder = new StringBuilder();
 
+            // Pega a primeira colmeia para servir de exemplo, senão a IA pode bugar com lista vazia
+            var colmeiasAtivas = colmeias.Where(c => c.Ativa).ToList();
+            if(!colmeiasAtivas.Any()) return;
+
+            foreach(var colmeia in colmeiasAtivas)
+            {
                 var ultimaInspecao = inspecoes
                     .Where(i => i.ColmeiaID == colmeia.ColmeiaID)
                     .OrderByDescending(i => i.DataInspecao)
@@ -43,76 +54,85 @@ namespace TrilhaBee.Aplicacao
 
                 int diasNaCaixa = (int)(DateTime.Now - colmeia.DataInstalacao).TotalDays;
 
-                // --- 1. Motor de Sugestões (Planejamento Temporal) ---
-                if (colmeia.QuantidadeQuadros >= 10 && colmeia.QuantidadeMelgueiras == 0 && diasNaCaixa >= 30)
-                {
-                    _alertaIARepositorio.Adicionar(new AlertaIA
-                    {
-                        ColmeiaID = colmeia.ColmeiaID,
-                        Mensagem = $"Sugestão: A colmeia {colmeia.Identificacao} está há {diasNaCaixa} dias na caixa com 10 quadros. É o momento ideal para adicionar a primeira melgueira.",
-                        NivelGravidade = "Sugestão",
-                        DataGeracao = DateTime.Now,
-                        Resolvido = false
-                    });
-                }
+                contextoBuilder.AppendLine($"- Colmeia {colmeia.Identificacao} (ID: {colmeia.ColmeiaID}):");
+                contextoBuilder.AppendLine($"  Dias instalada: {diasNaCaixa}");
+                contextoBuilder.AppendLine($"  Quadros: {colmeia.QuantidadeQuadros}, Melgueiras: {colmeia.QuantidadeMelgueiras}");
                 
-                if (colmeia.QuantidadeMelgueiras > 0 && ultimaInspecao != null)
+                if(ultimaInspecao != null)
                 {
-                    int diasDesdeInspecao = (int)(DateTime.Now - ultimaInspecao.DataInspecao).TotalDays;
-                    if (diasDesdeInspecao > 15)
-                    {
-                        _alertaIARepositorio.Adicionar(new AlertaIA
-                        {
-                            ColmeiaID = colmeia.ColmeiaID,
-                            Mensagem = $"Planejamento: A colmeia {colmeia.Identificacao} tem melgueiras e não é inspecionada há {diasDesdeInspecao} dias. Verifique a taxa de operculação.",
-                            NivelGravidade = "Sugestão",
-                            DataGeracao = DateTime.Now,
-                            Resolvido = false
-                        });
-                    }
+                    contextoBuilder.AppendLine($"  Última Inspeção: {ultimaInspecao.DataInspecao.ToShortDateString()}");
+                    contextoBuilder.AppendLine($"  Força (0-10): {ultimaInspecao.ForcaColmeia}, Alimento (0-10): {ultimaInspecao.NivelAlimento}, Condição: {ultimaInspecao.CondicaoGeral}");
+                    contextoBuilder.AppendLine($"  Clima: {ultimaInspecao.Clima}, Observações: {ultimaInspecao.Observacoes}");
+                }
+                else
+                {
+                    contextoBuilder.AppendLine($"  Nunca foi inspecionada.");
+                }
+            }
+
+            // Aqui vamos construir o prompt pedindo o formato JSON especificamente
+            var prompt = $@"
+Você é um especialista em apicultura avançada e atua como uma IA assistente do sistema TrilhaBee.
+Sua tarefa é analisar o cenário atual das colmeias e retornar um array JSON de alertas ou sugestões de manejo.
+
+Contexto atual das colmeias:
+{contextoBuilder.ToString()}
+
+Regras:
+1. Analise o clima, a quantidade de quadros, melgueiras, nível de alimento e histórico.
+2. Identifique potenciais problemas (fome, enxameação, falta de espaço, doenças).
+3. Você DEVE retornar EXATAMENTE um array JSON puro onde cada objeto tem duas propriedades: 'Mensagem' (string explicativa) e 'NivelGravidade' (string: 'Baixa', 'Media', 'Alta' ou 'Sugestão').
+4. Não retorne nenhum outro texto além do JSON, sem blocos de markdown.
+";
+
+            try
+            {
+                var respostaBruta = await _aiService.GetAiResponseAsync(prompt);
+                
+                // Limpa markdown se a IA colocar
+                if (respostaBruta.StartsWith("```json"))
+                {
+                    respostaBruta = respostaBruta.Substring(7);
+                    if (respostaBruta.EndsWith("```")) respostaBruta = respostaBruta.Substring(0, respostaBruta.Length - 3);
                 }
 
-                // --- 2. Predição de Mel ---
-                if (colmeia.QuantidadeMelgueiras > 0 && ultimaInspecao != null && ultimaInspecao.ForcaColmeia >= 5)
-                {
-                    double estimativaMel = colmeia.QuantidadeMelgueiras * 12.5 * (ultimaInspecao.ForcaColmeia / 10.0);
-                    _alertaIARepositorio.Adicionar(new AlertaIA
-                    {
-                        ColmeiaID = colmeia.ColmeiaID,
-                        Mensagem = $"Safra: A colmeia {colmeia.Identificacao} tem {colmeia.QuantidadeMelgueiras} melgueiras e boa força. Estimativa de produção: ~{Math.Round(estimativaMel)} kg de mel.",
-                        NivelGravidade = "Sugestão",
-                        DataGeracao = DateTime.Now,
-                        Resolvido = false
-                    });
-                }
+                var sugestoes = JsonSerializer.Deserialize<List<Dictionary<string, string>>>(respostaBruta.Trim());
+                if (sugestoes == null) throw new Exception("JSON veio vazio ou nulo.");
 
-                // --- 3. Motor de Alertas Críticos (Riscos) ---
-                if (ultimaInspecao != null)
+                foreach(var sugestao in sugestoes)
                 {
-                    if (ultimaInspecao.CondicaoGeral == "Ruim" || ultimaInspecao.NivelAlimento <= 3 || !ultimaInspecao.TemRainha)
+                    if (sugestao.TryGetValue("Mensagem", out var mensagem) && sugestao.TryGetValue("NivelGravidade", out var nivel))
                     {
-                        string motivo = !ultimaInspecao.TemRainha ? "Falta de Rainha" : (ultimaInspecao.NivelAlimento <= 3 ? "Alimento Crítico" : "Condição Ruim");
-                        _alertaIARepositorio.Adicionar(new AlertaIA
+                        // Evitar spam de alertas idênticos que já foram resolvidos ou estão ativos
+                        bool jaExiste = existentes.Any(a => a.Mensagem == mensagem);
+                        if(!jaExiste)
                         {
-                            ColmeiaID = colmeia.ColmeiaID,
-                            Mensagem = $"ALERTA CRÍTICO: A colmeia {colmeia.Identificacao} corre risco de perda por: {motivo}. Ação imediata necessária!",
-                            NivelGravidade = "Alta",
-                            DataGeracao = DateTime.Now,
-                            Resolvido = false
-                        });
+                            // Tenta associar a uma colmeia caso a IA cite o nome ou ID, fallback pro primeiro ID
+                            var colID = colmeiasAtivas.FirstOrDefault(c => mensagem.Contains(c.Identificacao))?.ColmeiaID ?? colmeiasAtivas.First().ColmeiaID;
+
+                            _alertaIARepositorio.Adicionar(new AlertaIA
+                            {
+                                ColmeiaID = colID,
+                                Mensagem = mensagem,
+                                NivelGravidade = nivel,
+                                DataGeracao = DateTime.Now,
+                                Resolvido = false
+                            });
+                        }
                     }
                 }
-                else if (diasNaCaixa > 45)
+            }
+            catch(Exception ex)
+            {
+                // Em caso de falha da IA (Timeout, Quota exceeded, etc), cria um alerta de sistema.
+                _alertaIARepositorio.Adicionar(new AlertaIA
                 {
-                    _alertaIARepositorio.Adicionar(new AlertaIA
-                    {
-                        ColmeiaID = colmeia.ColmeiaID,
-                        Mensagem = $"ALERTA: A colmeia {colmeia.Identificacao} foi instalada há {diasNaCaixa} dias e nunca foi inspecionada. Risco de enxameação.",
-                        NivelGravidade = "Media",
-                        DataGeracao = DateTime.Now,
-                        Resolvido = false
-                    });
-                }
+                    ColmeiaID = colmeiasAtivas.First().ColmeiaID,
+                    Mensagem = $"Falha na conexão com a OpenAI: {ex.Message}",
+                    NivelGravidade = "Media",
+                    DataGeracao = DateTime.Now,
+                    Resolvido = false
+                });
             }
         }
 

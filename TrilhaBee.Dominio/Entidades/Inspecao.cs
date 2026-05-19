@@ -15,6 +15,10 @@ namespace TrilhaBee.Dominio.Entidades
         public int ForcaColmeia { get; set; }
         public int NivelAlimento { get; set; }
         public string CondicaoGeral { get; set; }
+        
+        public decimal? MelColetado { get; set; }
+        public DateTime? DataColheita { get; set; }
+
         // Relacionamentos
         public int ColmeiaID { get; set; }
         public Colmeia Colmeia { get; set; }

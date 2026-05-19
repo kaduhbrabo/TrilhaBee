@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using TrilhaBee.Aplicacao;
 using TrilhaBee.Dominio.Entidades;
 using Microsoft.AspNetCore.Authorization;
+using System.Threading.Tasks;
 
 namespace TrilhaBee.API.Controllers
 {
@@ -46,11 +47,11 @@ namespace TrilhaBee.API.Controllers
         }
 
         [HttpPost("gerar")]
-        public IActionResult GerarAnalise()
+        public async Task<IActionResult> GerarAnalise()
         {
             try
             {
-                _alertaIAAplicacao.GerarAnaliseInteligente();
+                await _alertaIAAplicacao.GerarAnaliseInteligenteAsync();
                 return Ok(new { mensagem = "Análise inteligente concluída." });
             }
             catch (System.Exception ex)

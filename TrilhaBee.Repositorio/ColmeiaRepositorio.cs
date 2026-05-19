@@ -42,8 +42,7 @@ namespace TrilhaBee.Repositorio
 
         public IEnumerable<Colmeia> ObterTodos()
         {
-            var conexao = _contexto.Database.GetDbConnection();
-            return conexao.Query<Colmeia>("sp_ListarColmeias", commandType: System.Data.CommandType.StoredProcedure);
+            return _contexto.Colmeias.ToList();
         }
     }
 }
